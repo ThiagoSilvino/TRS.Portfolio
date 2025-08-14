@@ -18,7 +18,7 @@ export default function Landing() {
       <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'grid', placeItems: 'center', textAlign: 'center', padding: '2rem' }}>
         <div>
           <div style={{ letterSpacing: '.08em', textTransform: 'uppercase', fontWeight: 700, opacity: .9, fontFamily: 'system-ui, sans-serif' }}>
-            Your Name — Portfolio
+            Thiago Silvino — Portfolio
           </div>
           <div style={{ marginTop: '1.25rem', display: 'inline-flex', gap: '0.8rem', flexWrap: 'wrap' }}>
             <a href="/home" style={ghostBtn}>Enter</a>
