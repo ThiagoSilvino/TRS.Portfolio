@@ -7,7 +7,7 @@ export default function HomePage() {
         <section style={{ padding: 'min(6vw,5rem) 0 1rem' }}>
           <div style={kicker}>Practice</div>
           <h1 style={display}>Lets build something beautiful.</h1>
-          <p style={lede}>Selected works exploring craft, context, and clarity. Scroll to browse or jump directly to projects below.</p>
+          <p style={lede}>Selected works exploring craft, context, and clarity.</p>
         </section>
 
         <section>
