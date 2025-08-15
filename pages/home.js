@@ -16,7 +16,7 @@ export default function HomePage() {
             <Tile
               title="Manitoba Curling Centre"
               tags="Cultural · 2024 · Concept → Build"
-              image="/projects/featured-project.jpg"
+              image="/projects/featured.jpg"
               span={2}
             />
             {/* Standard tiles */}
