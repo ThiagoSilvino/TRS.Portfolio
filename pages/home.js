@@ -4,8 +4,8 @@ export default function HomePage() {
     <>
       <Header />
       <main style={{ maxWidth: 1280, margin: '0 auto', padding: '2rem 1.5rem' }}>
-        <section style={{ padding: 'min(6vw,5rem) 0 1rem' }}>
-          <div style={kicker}>Practice</div>
+        <section style={{ padding: 'min(6vw,5rem) 0 1rem', textAlign: 'center' }}>
+          {/* kicker removed */}
           <h1 style={display}>THIAGO ROCHA SILVINO.</h1>
           <p style={lede}>Selected works exploring craft, context, and clarity.</p>
         </section>
@@ -62,7 +62,13 @@ function Header() {
       background: 'rgba(247,247,245,.75)', borderBottom: '1px solid #E5E7EB'
     }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '.8rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ fontWeight: 700, letterSpacing: '.02em' }}>Your Name</div>
+        {/* HOME BUTTON — currently text; swap to a logo image when ready (see note below) */}
+        <a href="/home" style={{ textDecoration: 'none', color: '#111' }}>
+          <div style={brand}>Your Name</div>
+          {/* To use a logo mark instead of text, upload /public/logo.svg then replace the div above with:
+              <img src="/logo.svg" alt="Thiago Rocha Silvino" style={{ height: 24 }} />
+          */}
+        </a>
         <nav>
           <a href="/home" style={navLink}>Projects</a>
           <a href="/about" style={navLink}>About / Contact</a>
@@ -88,15 +94,26 @@ function Tile({ title, tags, image, span = 1 }) {
   );
 }
 
-/* styles (kept inline for now so you don’t need Tailwind yet) */
-const kicker = { textTransform: 'uppercase', letterSpacing: '.12em', fontSize: '.8rem', color: '#6B7280' };
-const display = { fontSize: 'clamp(2rem, 5vw, 3.2rem)', lineHeight: 1.1, margin: '.5rem 0 1rem' };
-const lede = { maxWidth: '70ch', color: '#374151', fontSize: '1.05rem' };
+/* styles */
+const brand = { fontWeight: 700, letterSpacing: '.02em' };
+
+// bigger + centered name
+const display = {
+  fontSize: 'clamp(3rem, 12vw, 6rem)',   // ~2x bigger than before
+  lineHeight: 1.05,
+  margin: '0.25rem auto 1rem',
+  fontWeight: 800,
+  letterSpacing: '-0.01em'
+};
+
+const lede = { maxWidth: '70ch', color: '#374151', fontSize: '1.05rem', margin: '0 auto' };
+
 const grid = {
   display: 'grid',
   gap: 'clamp(1rem, 2.8vw, 2rem)',
   gridTemplateColumns: '1fr',
 };
+
 const tile = {
   background: '#FFFFFF',
   borderRadius: 14,
