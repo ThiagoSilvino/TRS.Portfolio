@@ -6,7 +6,7 @@ export default function HomePage() {
       <main style={{ maxWidth: 1280, margin: '0 auto', padding: '2rem 1.5rem' }}>
         <section style={{ padding: 'min(6vw,5rem) 0 1rem' }}>
           <div style={kicker}>Practice</div>
-          <h1 style={display}>Lets build something beautiful.</h1>
+          <h1 style={display}>THIAGO ROCHA SILVINO.</h1>
           <p style={lede}>Selected works exploring craft, context, and clarity.</p>
         </section>
 
