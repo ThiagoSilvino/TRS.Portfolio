@@ -14,7 +14,7 @@ export default function HomePage() {
           <div style={grid}>
             {/* Large feature tile */}
             <Tile
-              title="Muse Arts Center"
+              title="Manitoba Curling Centre"
               tags="Cultural · 2024 · Concept → Build"
               image="https://images.unsplash.com/photo-1510146758428-e5e4b17b8b6b?q=80&w=1974&auto=format&fit=crop"
               span={2}
