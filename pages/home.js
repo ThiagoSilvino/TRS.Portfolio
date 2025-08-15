@@ -7,7 +7,7 @@ export default function HomePage() {
         <section style={{ padding: 'min(6vw,5rem) 0 1rem', textAlign: 'center' }}>
           {/* kicker removed */}
           <h1 style={display}>THIAGO ROCHA SILVINO.</h1>
-          <p style={lede}>Selected works exploring craft, context, and clarity.</p>
+          <p style={lede}>Selected works exploring craft, context, and clarity</p>
         </section>
 
         <section>
