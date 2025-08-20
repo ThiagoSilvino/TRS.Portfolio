@@ -3,3 +3,6 @@ body { margin: 0; font-family: Arial, sans-serif; }
   .landing-video { display: none !important; }
   /* The poster image + dark bg still provides an elegant look */
 }
+@media (prefers-reduced-motion: reduce) {
+  .landing-video { display: none !important; }
+}
