@@ -1,12 +1,12 @@
+// pages/home.js
 export default function HomePage() {
   return (
     <>
-      <Header />
-      <main style={{ maxWidth: 1280, margin: '0 auto', padding: '2rem 1.5rem' }}>
-        <section style={{ padding: 'min(6vw,5rem) 0 1rem', textAlign: 'center' }}>
-          {/* kicker removed */}
-          <h1 style={display}>THIAGO ROCHA SILVINO</h1>
-          <p style={lede}>Selected works exploring craft, context, and clarity</p>
+      {/* Global header now comes from _app.js */}
+      <main style={{ maxWidth: 1280, margin: "0 auto", padding: "2rem 1.5rem" }}>
+        <section style={{ padding: "min(6vw,5rem) 0 1rem", textAlign: "center" }}>
+          <h1 style={display}>THIAGO ROCHA SILVINO.</h1>
+          <p style={lede}>Selected works exploring craft, context, and clarity.</p>
         </section>
 
         <section>
@@ -18,7 +18,7 @@ export default function HomePage() {
               image="/Projects/Featured.jpg"
               span={2}
             />
-            {/* Standard tiles */}
+            {/* Standard tiles (placeholders for now) */}
             <Tile
               title="C7 House"
               tags="Residential · 2023"
@@ -41,91 +41,54 @@ export default function HomePage() {
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "2rem", gap: "1rem" }}>
             <a href="#" style={btn}>View All Projects</a>
+            <a href="/viewer" style={btn}>Open 3D Viewer</a>
           </div>
         </section>
       </main>
 
-      <footer style={{ borderTop: '1px solid #E5E7EB', color: '#6B7280', textAlign: 'center', padding: '2rem 1rem' }}>
+      <footer style={{ borderTop: "1px solid #E5E7EB", color: "#6B7280", textAlign: "center", padding: "2rem 1rem" }}>
         © {new Date().getFullYear()} Your Name — All rights reserved.
       </footer>
     </>
   );
 }
 
-function Header() {
-  return (
-    <header style={{
-      position: 'sticky', top: 0, zIndex: 5, backdropFilter: 'blur(8px)',
-      background: 'rgba(247,247,245,.75)', borderBottom: '1px solid #E5E7EB'
-    }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '.8rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        {/* HOME BUTTON — currently text; swap to a logo image when ready (see note below) */}
-        <a href="/home" style={{ textDecoration: 'none', color: '#111' }}>
-          <div style={brand}>Your Name</div>
-          {/* To use a logo mark instead of text, upload /public/logo.svg then replace the div above with:
-              <img src="/logo.svg" alt="Thiago Rocha Silvino" style={{ height: 24 }} />
-          */}
-        </a>
-        <nav>
-          <a href="/home" style={navLink}>Projects</a>
-          <a href="/about" style={navLink}>About / Contact</a>
-          <a href="/resume.pdf" style={navLink} download>Resume</a>
-        </nav>
-      </div>
-    </header>
-  );
-}
-
 function Tile({ title, tags, image, span = 1 }) {
   return (
-    <article style={{
-      ...tile,
-      gridColumn: span === 2 ? 'span 2' : 'auto'
-    }}>
+    <article style={{ ...tile, gridColumn: span === 2 ? "span 2" : "auto" }}>
       <img src={image} alt={title} style={tileMedia} />
       <div style={tileCap}>
-        <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700 }}>{title}</h3>
-        <div style={{ opacity: .85, fontSize: '.95rem' }}>{tags}</div>
+        <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: 700 }}>{title}</h3>
+        <div style={{ opacity: 0.85, fontSize: ".95rem" }}>{tags}</div>
       </div>
     </article>
   );
 }
 
 /* styles */
-const brand = { fontWeight: 700, letterSpacing: '.02em' };
-
-// bigger + centered name
-const display = {
-  fontSize: 'clamp(3rem, 12vw, 6rem)',   // ~2x bigger than before
-  lineHeight: 1.05,
-  margin: '0.25rem auto 1rem',
-  fontWeight: 800,
-  letterSpacing: '-0.01em'
-};
-
-const lede = { maxWidth: '70ch', color: '#374151', fontSize: '1.05rem', margin: '0 auto' };
+const display = { fontSize: "clamp(3rem, 12vw, 6rem)", lineHeight: 1.05, margin: "0.25rem auto 1rem", fontWeight: 800, letterSpacing: "-0.01em" };
+const lede = { maxWidth: "70ch", color: "#374151", fontSize: "1.05rem", margin: "0 auto" };
 
 const grid = {
-  display: 'grid',
-  gap: 'clamp(1rem, 2.8vw, 2rem)',
-  gridTemplateColumns: '1fr',
+  display: "grid",
+  gap: "clamp(1rem, 2.8vw, 2rem)",
+  gridTemplateColumns: "1fr",
 };
 
 const tile = {
-  background: '#FFFFFF',
+  background: "#FFFFFF",
   borderRadius: 14,
-  overflow: 'hidden',
-  boxShadow: '0 2px 24px rgba(0,0,0,.08)',
-  position: 'relative',
+  overflow: "hidden",
+  boxShadow: "0 2px 24px rgba(0,0,0,.08)",
+  position: "relative",
 };
-const tileMedia = { aspectRatio: '16 / 10', width: '100%', objectFit: 'cover', display: 'block' };
+const tileMedia = { aspectRatio: "16 / 10", width: "100%", objectFit: "cover", display: "block" };
 const tileCap = {
-  position: 'absolute', left: 0, right: 0, bottom: 0,
-  padding: '1rem 1rem 1.2rem',
-  color: '#fff',
-  background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.65) 85%)',
+  position: "absolute", left: 0, right: 0, bottom: 0,
+  padding: "1rem 1rem 1.2rem",
+  color: "#fff",
+  background: "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.65) 85%)",
 };
-const btn = { display: 'inline-block', padding: '.85rem 1.2rem', borderRadius: 999, border: '1px solid #E5E7EB', background: '#fff', textDecoration: 'none', color: '#111', fontWeight: 600 };
-const navLink = { color: '#111', textDecoration: 'none', marginLeft: '1.25rem', fontWeight: 500 };
+const btn = { display: "inline-block", padding: ".85rem 1.2rem", borderRadius: 999, border: "1px solid #E5E7EB", background: "#fff", textDecoration: "none", color: "#111", fontWeight: 600 };
