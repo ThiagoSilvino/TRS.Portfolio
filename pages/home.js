@@ -1,4 +1,3 @@
-// pages/home.js
 export default function HomePage() {
   return (
     <>
