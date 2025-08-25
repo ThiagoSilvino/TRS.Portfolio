@@ -2,10 +2,9 @@
 export default function HomePage() {
   return (
     <>
-      {/* Global header now comes from _app.js */}
       <main style={{ maxWidth: 1280, margin: "0 auto", padding: "2rem 1.5rem" }}>
         <section style={{ padding: "min(6vw,5rem) 0 1rem", textAlign: "center" }}>
-          <h1 style={display}>THIAGO ROCHA SILVINO.</h1>
+          <h1 id="hero-name" style={displayHome}>THIAGO ROCHA SILVINO.</h1>
           <p style={lede}>Selected works exploring craft, context, and clarity.</p>
         </section>
 
@@ -18,12 +17,18 @@ export default function HomePage() {
               image="/Projects/Featured.jpg"
               span={2}
             />
-            {/* Standard tiles (placeholders for now) */}
+            {/* New example project tiles using your uploaded images */}
             <Tile
-              title="C7 House"
-              tags="Residential · 2023"
-              image="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2069&auto=format&fit=crop"
+              title="USOPC Athlete Dorms"
+              tags="Colorado Springs · Concept"
+              image="/Projects/HERO_USAG_Dorm1.jpg"
             />
+            <Tile
+              title="LSU Arena"
+              tags="Baton Rouge · Concept"
+              image="/Projects/Hero_LSU_Arena 1.jpg"
+            />
+            {/* Existing placeholders */}
             <Tile
               title="Atrium Commons"
               tags="Public · 2022"
@@ -33,11 +38,6 @@ export default function HomePage() {
               title="Timber Library"
               tags="Institutional · 2024"
               image="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2069&auto=format&fit=crop"
-            />
-            <Tile
-              title="East Hall"
-              tags="Education · 2021"
-              image="https://images.unsplash.com/photo-1465804575741-338df8554e38?q=80&w=2070&auto=format&fit=crop"
             />
           </div>
 
@@ -51,6 +51,13 @@ export default function HomePage() {
       <footer style={{ borderTop: "1px solid #E5E7EB", color: "#6B7280", textAlign: "center", padding: "2rem 1rem" }}>
         © {new Date().getFullYear()} Your Name — All rights reserved.
       </footer>
+
+      <style jsx global>{`
+        @keyframes rise {
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </>
   );
 }
@@ -68,7 +75,15 @@ function Tile({ title, tags, image, span = 1 }) {
 }
 
 /* styles */
-const display = { fontSize: "clamp(3rem, 12vw, 6rem)", lineHeight: 1.05, margin: "0.25rem auto 1rem", fontWeight: 800, letterSpacing: "-0.01em" };
+const displayHome = {
+  lineHeight: 1.05,
+  margin: "0.25rem auto 1.25rem",
+  fontWeight: 800,
+  letterSpacing: "-0.01em",
+  whiteSpace: "nowrap",
+  animation: "rise .6s ease-out both",
+  fontSize: "clamp(3rem, 12vw, 6rem)"
+};
 const lede = { maxWidth: "70ch", color: "#374151", fontSize: "1.05rem", margin: "0 auto" };
 
 const grid = {
