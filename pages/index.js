@@ -2,116 +2,87 @@
 export default function Landing() {
   return (
     <div style={wrap}>
-      {/* Background video */}
+      {/* Video background */}
       <video
-        className="landing-video"
         autoPlay
         muted
         loop
         playsInline
         style={video}
       >
-        {/* If you later upload /public/landing.mp4, this source will be used */}
+        {/* Prefer MP4 (h264) when you upload it */}
         <source src="/landing.mp4" type="video/mp4" />
-        {/* You uploaded landing.mov — some browsers accept this */}
         <source src="/landing.mov" type="video/quicktime" />
-        {/* Fallback demo clip (safe to keep until your MP4 is ready) */}
-        <source
-          src="https://cdn.coverr.co/videos/coverr-modern-architecture-views-4051/1080p.mp4"
-          type="video/mp4"
-        />
       </video>
 
-      {/* Soft overlay to keep text readable */}
+      {/* Soft darken for readability */}
       <div style={overlay} />
 
-      {/* Quick "skip" link straight to projects */}
-      <a href="/home" style={skip}>Skip</a>
+      {/* Main content matches Home spacing so the hero name doesn't jump */}
+      <main style={{ maxWidth: 1280, margin: "0 auto", padding: "2rem 1.5rem" }}>
+        <section style={{ padding: "min(6vw,5rem) 0 1rem", textAlign: "center" }}>
+          <h1 id="hero-name" style={displayLanding}>THIAGO ROCHA SILVINO.</h1>
 
-      {/* Centered content */}
-      <div style={inner}>
-        <div style={wordmark}>Thiago Rocha Silvino — Portfolio</div>
-        <nav style={ctaWrap} aria-label="Landing navigation">
-          <a href="/home" style={ghostBtn}>Enter</a>
-          <a href="/home" style={ghostBtn}>Work</a>
-          <a href="/resume.pdf" style={ghostBtn} download>Resume</a>
-        </nav>
-      </div>
+          <nav style={landingNav}>
+            <a href="/home"        style={landingLink}>Enter</a>
+            <a href="/home"        style={landingLink}>Work</a>
+            <a href="/about"       style={landingLink}>Contact</a>
+          </nav>
+        </section>
+      </main>
+
+      {/* animation keyframes */}
+      <style jsx global>{`
+        @keyframes rise {
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
 
-/* inline styles */
-const wrap = {
-  position: 'relative',
-  height: '100vh',
-  width: '100%',
-  overflow: 'hidden',
-  background: '#0E0E10',
-  color: '#F8F8F8',
-};
+/* styles */
+const wrap = { position: "relative", minHeight: "100vh", background: "#0E0E10", color: "#F8F8F8" };
 
 const video = {
-  position: 'absolute',
-  inset: 0,
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
-  filter: 'brightness(.45) saturate(.9)',
+  position: "fixed", inset: 0, width: "100%", height: "100%",
+  objectFit: "cover", zIndex: -2
 };
 
 const overlay = {
-  position: 'absolute',
-  inset: 0,
-  background: 'radial-gradient(ellipse at center, rgba(0,0,0,.15), rgba(0,0,0,.55))',
+  position: "fixed", inset: 0, zIndex: -1,
+  background: "radial-gradient(ellipse at center, rgba(0,0,0,.15), rgba(0,0,0,.55))"
 };
 
-const inner = {
-  position: 'relative',
-  zIndex: 1,
-  height: '100%',
-  display: 'grid',
-  placeItems: 'center',
-  textAlign: 'center',
-  padding: '2rem',
+const displayBase = {
+  lineHeight: 1.05,
+  margin: "0.25rem auto 1.25rem",
+  fontWeight: 800,
+  letterSpacing: "-0.01em",
+  whiteSpace: "nowrap",      // never wrap to two lines
+  animation: "rise .6s ease-out both"
 };
 
-const wordmark = {
-  letterSpacing: '.08em',
-  textTransform: 'uppercase',
-  fontWeight: 700,
-  opacity: .92,
+// Landing adds blend mode so it reacts to the video
+const displayLanding = {
+  ...displayBase,
+  fontSize: "clamp(3rem, 12vw, 6rem)",
+  color: "#fff",
+  mixBlendMode: "difference"
 };
 
-const ctaWrap = {
-  marginTop: '1.25rem',
-  display: 'inline-flex',
-  gap: '0.85rem',
-  flexWrap: 'wrap',
-  justifyContent: 'center',
+const landingNav = {
+  display: "inline-flex",
+  gap: "1.25rem",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "#fff"
 };
 
-const ghostBtn = {
-  padding: '.9rem 1.2rem',
-  borderRadius: 999,
-  border: '1px solid rgba(255,255,255,.3)',
-  color: '#fff',
-  textDecoration: 'none',
+const landingLink = {
+  color: "#fff",
+  textDecoration: "none",
   fontWeight: 600,
-  backdropFilter: 'blur(6px)',
-  background: 'rgba(255,255,255,.06)',
-};
-
-const skip = {
-  position: 'absolute',
-  top: 14,
-  left: 14,
-  zIndex: 1,
-  padding: '.4rem .7rem',
-  borderRadius: 999,
-  border: '1px solid rgba(255,255,255,.25)',
-  color: '#fff',
-  textDecoration: 'none',
-  background: 'rgba(255,255,255,.08)',
-  fontSize: '.85rem',
+  letterSpacing: ".06em"
 };
