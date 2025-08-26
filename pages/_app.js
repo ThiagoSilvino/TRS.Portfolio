@@ -1,10 +1,12 @@
 // pages/_app.js
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import "../styles/globals.css";
 
 export default function MyApp({ Component, pageProps }) {
   const [chatOpen, setChatOpen] = useState(false);
   const [showBrand, setShowBrand] = useState(false);
+  const router = useRouter();
 
   // brand visibility: hide while #hero-name is in view; show after scrolled past
   useEffect(() => {
@@ -17,14 +19,16 @@ export default function MyApp({ Component, pageProps }) {
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [router.pathname]);
 
-  // close on ESC
+  // close chat on ESC
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setChatOpen(false);
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  const showFooter = router.pathname !== "/"; // hide on landing only
 
   return (
     <>
@@ -32,14 +36,20 @@ export default function MyApp({ Component, pageProps }) {
         onOpenChat={() => setChatOpen(true)}
         showBrand={showBrand}
       />
+
+      {/* page content; blur when chat is open */}
       <div style={{ transition: "filter .2s ease", filter: chatOpen ? "blur(6px)" : "none" }}>
         <Component {...pageProps} />
       </div>
+
+      {showFooter && <SiteFooter />}
+
       {chatOpen && <ChatOverlay onClose={() => setChatOpen(false)} />}
     </>
   );
 }
 
+/* ---------- Header ---------- */
 function SiteHeader({ onOpenChat, showBrand }) {
   return (
     <header style={{
@@ -88,6 +98,72 @@ const iconBtn = {
   width: 36, height: 36, display: "inline-grid", placeItems: "center", color: "#111", cursor: "pointer"
 };
 
+/* ---------- Footer (ARCHouse-style) ---------- */
+function SiteFooter() {
+  return (
+    <footer style={{
+      borderTop: "1px solid #E5E7EB",
+      background: "#fff",
+      color: "#111",
+      marginTop: "3rem"
+    }}>
+      <div style={{
+        maxWidth: 1280, margin: "0 auto",
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 1fr) 1fr",
+        gap: "2rem",
+        padding: "2rem 1.2rem"
+      }}>
+        <FooterCol title="PAGES" items={[
+          { label: "HOME", href: "/home" },
+          { label: "ABOUT", href: "/about" },
+          { label: "WORKS", href: "/home#projects" },
+          { label: "CONTACT", href: "/about#contact" },
+        ]} />
+        <FooterCol title="SOCIALS" items={[
+          { label: "INSTAGRAM", href: "https://instagram.com/", ext: true },
+          { label: "X", href: "https://x.com/", ext: true },
+        ]} />
+        <FooterCol title="LEGAL" items={[
+          { label: "TERMS OF CONDITIONS", href: "#" },
+          { label: "PRIVACY POLICY", href: "#" },
+        ]} />
+        <FooterCol title="TEMPLATES" items={[
+          { label: "BUY THIS TEMPLATE", href: "#" },
+          { label: "OTHER TEMPLATES", href: "#" },
+          { label: "CREATED BY HD", href: "#" },
+        ]} />
+        <div style={{ alignSelf: "start", textAlign: "right", opacity: .8 }}>
+          ©{new Date().getFullYear()} SILVINO
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function FooterCol({ title, items }) {
+  return (
+    <div>
+      <div style={{ fontSize: ".8rem", letterSpacing: ".12em", color: "#6B7280", marginBottom: ".65rem" }}>{title}</div>
+      <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: ".4rem" }}>
+        {items.map((it) => (
+          <li key={it.label}>
+            <a
+              href={it.href}
+              target={it.ext ? "_blank" : undefined}
+              rel={it.ext ? "noreferrer noopener" : undefined}
+              style={{ textDecoration: "none", color: "#111" }}
+            >
+              {it.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/* ---------- Chat Overlay ---------- */
 function ChatOverlay({ onClose }) {
   return (
     <div role="dialog" aria-modal="true" style={overlay}>
