@@ -4,7 +4,7 @@ export default function Landing() {
     <main style={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
       {/* Background video */}
       <video
-        src="/landing.mov"
+        src="/landing.mp4"
         autoPlay
         muted
         loop
