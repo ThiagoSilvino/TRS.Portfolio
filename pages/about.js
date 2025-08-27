@@ -1,5 +1,6 @@
 // pages/about.js
 import Head from "next/head";
+import Footer from "../components/Footer";
 
 export default function About() {
   return (
@@ -54,6 +55,8 @@ export default function About() {
             </form>
           </article>
         </section>
+
+        <Footer />
       </main>
     </>
   );
