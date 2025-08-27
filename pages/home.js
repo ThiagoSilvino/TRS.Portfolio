@@ -17,7 +17,7 @@ export default function HomePage() {
             ...(cameFromLanding ? {} : animateIn)
           }}
         >
-          THIAGO ROCHA SILVINO.
+          THIAGO ROCHA SILVINO
         </h1>
         <p style={lede}>Selected works exploring craft, context, and clarity.</p>
       </section>
