@@ -17,9 +17,9 @@ export default function HomePage() {
     if (reduceMotion) return;
 
     let rafId;
-    const speedBg = 0.15;   // background image (behind name)
-    const speedFg = 0.35;   // foreground image (in front of name)
-    const speedBand = 0.22; // parallax stripe behind content
+    const speedBg = 0.15;   // background image (behind)
+    const speedFg = 0.35;   // foreground image (in front)
+    const speedBand = 0.22; // parallax stripe
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
     const onScroll = () => {
@@ -94,23 +94,17 @@ export default function HomePage() {
               SILVINO
             </div>
             <div style={{ justifySelf: "end", display: "flex", gap: "1.25rem" }}>
-              <a href="/home#projects" style={navLink}>
-                Work
-              </a>
-              <a href="/about" style={navLink}>
-                Process
-              </a>
-              <a href="/about" style={navLink}>
-                About
-              </a>
+              <a href="/home#projects" style={navLink}>Work</a>
+              <a href="/about" style={navLink}>Process</a>
+              <a href="/about" style={navLink}>About</a>
             </div>
           </nav>
         </header>
 
-        {/* small spacer so the name isn’t glued to the nav */}
+        {/* small spacer so the hero isn’t glued to the nav */}
         <div style={{ height: "5vh" }} />
 
-        {/* ===================== MEGA NAME ===================== */}
+        {/* ===================== HERO NAME IMAGE ===================== */}
         <section
           style={{
             position: "relative",
@@ -119,28 +113,22 @@ export default function HomePage() {
             padding: "0 1.5rem",
           }}
         >
-          <h1
+          <img
+            src="/meganametext.png"
+            alt="Thiago Rocha Silvino"
+            draggable={false}
             style={{
-              margin: 0,
-              lineHeight: 0.9,
-              fontWeight: 900,
-              letterSpacing: "-0.01em",
-              fontFamily:
-                "Space Grotesk, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
-              whiteSpace: "nowrap", // never wrap
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              fontSize: "clamp(2.6rem, 10vw, 12rem)", // shrinks before wrapping
-              textAlign: "center",
-              position: "relative",
-              zIndex: 2,
+              display: "block",
+              margin: "0 auto",
+              width: "min(1800px, 96%)",  // large but responsive
+              height: "auto",
+              imageRendering: "auto",
+              userSelect: "none",
             }}
-          >
-            THIAGO ROCHA SILVINO
-          </h1>
+          />
         </section>
 
-        {/* Divider / break between name and layered feature */}
+        {/* Divider / break between name image and layered feature */}
         <div
           aria-hidden="true"
           style={{
@@ -169,13 +157,13 @@ export default function HomePage() {
             padding: "0 1.5rem",
             height: "clamp(260px, 55vw, 520px)",
             zIndex: 1,
-            background: "#EEE", // subtle placeholder while loading
+            background: "#EEE",
             borderRadius: 12,
             overflow: "hidden",
           }}
           aria-label="Featured architecture image with layered parallax"
         >
-          {/* Background image (behind name) */}
+          {/* Background image (behind) */}
           <img
             ref={bgRef}
             src="/featuredbackground.png"
@@ -193,13 +181,12 @@ export default function HomePage() {
             }}
           />
 
-          {/* Foreground image (in front of name) */}
+          {/* Foreground image (in front) */}
           <img
             ref={fgRef}
             src="/featuredforeground.png"
             alt="Featured project foreground"
             onError={(e) => {
-              // if missing, hide cleanly
               e.currentTarget.style.display = "none";
             }}
             style={{
@@ -237,7 +224,7 @@ export default function HomePage() {
               height: "40vh",
               background:
                 "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.06) 100%), url('/rainbowtess.png') center/cover no-repeat",
-              opacity: 0.25, // keep it subtle
+              opacity: 0.25,
               borderTop: "1px solid #e3e3e3",
               borderBottom: "1px solid #e3e3e3",
               zIndex: 0,
@@ -304,12 +291,7 @@ export default function HomePage() {
           >
             {/* Card 1 */}
             <article style={card}>
-              <img
-                src="/poster.jpg"
-                alt="Project thumbnail"
-                style={thumb}
-                loading="lazy"
-              />
+              <img src="/poster.jpg" alt="Project thumbnail" style={thumb} loading="lazy" />
               <div style={cardMeta}>
                 <h3 style={{ margin: 0 }}>Courtyard House</h3>
                 <small style={{ color: "#6B7280" }}>Residential · 2023</small>
