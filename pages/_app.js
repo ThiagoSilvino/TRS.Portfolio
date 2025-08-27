@@ -1,6 +1,7 @@
 // pages/_app.js
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import "../styles/globals.css";
 
 export default function MyApp({ Component, pageProps }) {
@@ -9,10 +10,11 @@ export default function MyApp({ Component, pageProps }) {
   const [menuOpen, setMenuOpen]   = useState(false);
   const [showBrand, setShowBrand] = useState(false);
 
-  // Show "SILVINO" in header after hero name scrolls out of view
+  // Show "SILVINO" in header only after the hero name scrolls out of view.
+  // Looks for an element with id="hero-name" (added on the Home page).
   useEffect(() => {
     const el = document.getElementById("hero-name");
-    if (!el) { setShowBrand(true); return; } // no hero on this page → always show
+    if (!el) { setShowBrand(true); return; } // no hero sentinel on this page → always show
     const obs = new IntersectionObserver(
       ([entry]) => setShowBrand(!entry.isIntersecting),
       { threshold: 0.01 }
@@ -41,6 +43,14 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <>
+      <Head>
+        {/* Global favicon */}
+        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
+      </Head>
+
       {/* Header is hidden on the landing page */}
       {!isLanding && (
         <SiteHeader
@@ -252,23 +262,3 @@ function MenuColumn({ title, items }) {
     </div>
   );
 }
-// pages/_app.js
-import Head from "next/head";
-import "../styles/globals.css";
-
-function MyApp({ Component, pageProps }) {
-  return (
-    <>
-      <Head>
-        {/* Global favicon */}
-        <link rel="icon" href="/favicon.png" sizes="any" />
-        <link rel="apple-touch-icon" href="/favicon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
-      </Head>
-      <Component {...pageProps} />
-    </>
-  );
-}
-
-export default MyApp;
