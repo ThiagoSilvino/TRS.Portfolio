@@ -1,52 +1,82 @@
 // pages/index.js
+import Head from "next/head";
+
 export default function Landing() {
   return (
-    <main style={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
-      {/* Background video */}
-      <video
-        src="/landing.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        style={{
-          position: "absolute", inset: 0, width: "100%", height: "100%",
-          objectFit: "cover", filter: "grayscale(20%) contrast(105%) opacity(.75)"
-        }}
-      />
+    <>
+      <Head>
+        <title>Enter — Thiago Rocha Silvino</title>
+        <meta name="description" content="Landing page — enter the portfolio." />
+      </Head>
 
-      {/* Foreground content */}
-      <div style={{
-        position: "relative", zIndex: 1,
-        maxWidth: 1280, margin: "0 auto", padding: "2rem 1.5rem",
-        height: "100%", display: "grid", alignContent: "center", gap: "2rem"
-      }}>
-        {/* Name aligned as on Home */}
-        <h1
+      <main style={{ position: "relative", minHeight: "100vh", overflow: "hidden", background: "#0E0E10" }}>
+        {/* Background video */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/poster.jpg"
           style={{
-            margin: 0,
-            fontWeight: 800,
-            letterSpacing: ".02em",
-            lineHeight: 1.1,
-            // Keep on one line; scale down only if absolutely necessary
-            whiteSpace: "nowrap",
-            fontSize: "clamp(1.6rem, 6vw, 3.2rem)",
-            mixBlendMode: "difference",  // “alive” against video
-            color: "#fff"
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: "brightness(.45)",
           }}
         >
-          THIAGO ROCHA SILVINO
-        </h1>
+          {/* If you add a WebM, put it above the MP4 */}
+          {/* <source src="/landing.webm" type="video/webm" /> */}
+          <source src="/landing.mp4" type="video/mp4" />
+        </video>
 
-        {/* Text links */}
-        <nav style={{ display: "flex", gap: "2rem", fontWeight: 600 }}>
-          <a href="/home?from=landing"                style={link}>Enter</a>
-          <a href="/home?from=landing#projects"       style={link}>Work</a>
-          <a href="/about?from=landing#contact"       style={link}>Contact</a>
-        </nav>
-      </div>
-    </main>
+        {/* Foreground content */}
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            maxWidth: 1280,
+            margin: "0 auto",
+            padding: "2rem 1.5rem",
+            height: "100%",
+            display: "grid",
+            placeItems: "center",
+            textAlign: "center",
+            color: "#fff",
+          }}
+        >
+          <div>
+            <h1
+              style={{
+                margin: 0,
+                fontWeight: 800,
+                letterSpacing: ".02em",
+                lineHeight: 1.1,
+                whiteSpace: "nowrap",
+                fontSize: "clamp(1.6rem, 6vw, 3.2rem)",
+              }}
+            >
+              THIAGO ROCHA SILVINO.
+            </h1>
+
+            <nav style={{ display: "inline-flex", gap: "1rem", marginTop: "1.25rem", fontWeight: 600 }}>
+              <a href="/home?from=landing" style={link}>Enter</a>
+              <a href="/home?from=landing#projects" style={link}>Work</a>
+              <a href="/about?from=landing#contact" style={link}>CV</a>
+            </nav>
+          </div>
+        </div>
+      </main>
+    </>
   );
 }
 
-const link = { color: "#fff", textDecoration: "none" };
+const link = {
+  color: "#fff",
+  textDecoration: "none",
+  padding: ".6rem 1rem",
+  borderRadius: "999px",
+  border: "1px solid rgba(255,255,255,.35)",
+  backdropFilter: "blur(6px)",
+};
