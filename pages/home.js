@@ -7,12 +7,13 @@
 // - /rainbowtess.png
 
 import React from "react";
-import { useRouter } from "next/router";
+// Robust asset paths: import images so Next resolves correct URL (works with basePath/assetPrefix)
+import megaNamePng from "../public/Projects/MegaNameText.png";
+import featuredBg   from "../public/Projects/featuredbackground.png";
+import featuredFg   from "../public/Projects/featuredforeground.png";
+import rainbowTess  from "../public/rainbowtess.png";
 
 export default function Home() {
-  const { basePath } = useRouter();
-  const prefix = basePath || ""; // handles deployments with a basePath (e.g., GitHub Pages)
-
   return (
     <main>
       <style jsx global>{`
@@ -87,7 +88,7 @@ export default function Home() {
         {/* Sticky MegaNameText PNG (replaces prior text) */}
         <div className="mega-sticky" id="hero-name">
           <img
-            src={`${prefix}/Projects/MegaNameText.png`}
+            src={megaNamePng.src}
             alt="Thiago Rocha Silvino — Mega Name"
             className="mega-img"
             draggable={false}
@@ -99,14 +100,14 @@ export default function Home() {
           <div className="feature-stack-aspect">
             {/* BACK (always the very back) */}
             <img
-              src={`${prefix}/Projects/featuredbackground.png`}
+              src={featuredBg.src}
               alt="Featured background"
               className="feature-img bg"
               draggable={false}
             />
             {/* FRONT (overlays Mega + back) */}
             <img
-              src={`${prefix}/Projects/featuredforeground.png`}
+              src={featuredFg.src}
               alt="Featured foreground"
               className="feature-img fg"
               draggable={false}
@@ -125,7 +126,7 @@ export default function Home() {
       <section
         className="parallax-section"
         aria-label="Parallax Bar"
-        style={{ backgroundImage: `url('${prefix}/rainbowtess.png')` }}
+        style={{ backgroundImage: `url(${rainbowTess.src})` }}
       />
 
       {/* Optional content below for testing scroll */}
