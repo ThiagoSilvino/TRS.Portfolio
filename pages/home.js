@@ -1,138 +1,142 @@
-// pages/home.js (Next.js pages router)
-// Implements: MegaNameText sticky + locked featured foreground/background stack + parallax bar
-// Assets expected in /public:
-// - /MegaNameText.png
-// - /featuredforeground.png
-// - /featuredbackground.png
-// - /rainbowtess.png
+<main style={{ background: "#F7F7F5", color: "#111" }}>
+<div style={{ height: "6vh" }} />
 
-import React from "react";
+      {/* === MEGA HEADLINE === */}
+      {/* === MEGA HEADLINE (single line, never wraps) === */}
+<section style={{ position: "relative", maxWidth: 1280, margin: "0 auto", padding: "0 1.5rem" }}>
+<h1
+style={{
+@@ -62,27 +62,53 @@ export default function HomePage() {
+letterSpacing: "-0.01em",
+fontFamily:
+"Space Grotesk, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
+            fontSize: "clamp(3.2rem, 16vw, 12rem)",
+            // Keep on one line: shrink before wrap
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            // Max huge, scales down on smaller screens, never wraps
+            fontSize: "clamp(2.2rem, 10vw, 12rem)",
+textAlign: "center",
+position: "relative",
+            zIndex: 2,
+            zIndex: 2, // above bg image, below fg image if they overlap
+}}
+>
+THIAGO ROCHA SILVINO
+</h1>
+</section>
 
-export default function Home() {
-  return (
-    <main>
-      <style jsx global>{`
-        :root { --nav-height: 64px; }
+      {/* === DIVIDER / BREAK between name and layered image === */}
+      <div
+        aria-hidden="true"
+        style={{
+          maxWidth: 1280,
+          margin: "1.25rem auto 1.75rem",
+          padding: "0 1.5rem",
+        }}
+      >
+        <div
+          style={{
+            height: 8,                    // thicker band for emphasis
+            background: "#E7E7E7",
+            borderRadius: 999,
+            boxShadow: "inset 0 -1px 0 #e3e3e3, inset 0 1px 0 #efefef",
+          }}
+        />
+      </div>
 
-        .intro-section {
-          position: relative;
-          min-height: 170vh; /* room so sticky can hold until images meet it */
-        }
+{/* === LAYERED IMAGE PARALLAX === */}
+<section
+style={{
+position: "relative",
+maxWidth: 1280,
+          margin: "2rem auto 4rem",
+          margin: "0 auto 4rem",
+padding: "0 1.5rem",
+height: "clamp(260px, 55vw, 520px)",
+          zIndex: 1, // sits under the foreground image and divider above
+}}
+aria-label="Featured architecture image with layered parallax"
+>
+        {/* Background image (behind text) */}
+<img
+ref={bgRef}
+src="/Projects/FeaturedBackground.png"
+@@ -99,6 +125,8 @@ export default function HomePage() {
+willChange: "transform",
+}}
+/>
 
-        /* MEGA NAME (middle layer) */
-        .mega-sticky {
-          position: sticky;
-          top: calc(var(--nav-height) + 30px); /* 30px below nav */
-          z-index: 15; /* between background (5) and foreground (25) */
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          pointer-events: none; /* decorative */
-        }
-        .mega-img {
-          max-width: min(92vw, 1400px);
-          height: auto;
-          display: block;
-          margin: 0 auto;
-          user-select: none;
-        }
+        {/* Foreground image (over text) */}
+<img
+ref={fgRef}
+src="/Projects/FeaturedForeground.png"
+@@ -110,14 +138,14 @@ export default function HomePage() {
+height: "100%",
+objectFit: "cover",
+borderRadius: 12,
+            zIndex: 3,
+            zIndex: 3, // foremost
+willChange: "transform",
+pointerEvents: "none",
+}}
+/>
+</section>
 
-        /* FEATURED STACK (back + front locked together) */
-        .feature-stack-wrapper {
-          position: relative;
-          max-width: min(92vw, 1400px);
-          margin: 10px auto 0; /* 10px below MegaNameText */
-        }
-        .feature-stack-aspect {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 16/9; /* adjust if your art has a different ratio */
-        }
-        .feature-img {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: contain; /* ensures perfect overlap / lock */
-          user-select: none;
-          pointer-events: none;
-        }
-        .bg { z-index: 5; }
-        .fg { z-index: 25; }
+      {/* === NEW SECTION: PARALLAX STRIPE BEHIND CONTENT === */}
+      {/* === PARALLAX STRIPE BEHIND CONTENT (next section) === */}
+<section
+style={{
+position: "relative",
+@@ -126,7 +154,7 @@ export default function HomePage() {
+marginBottom: "4rem",
+}}
+>
+        {/* The band that parallax-scrolls behind */}
+        {/* Band that moves behind */}
+<div
+ref={bandRef}
+aria-hidden="true"
+@@ -135,17 +163,16 @@ export default function HomePage() {
+left: 0,
+right: 0,
+top: "-20vh",
+            height: "40vh",                       // thickness of the stripe
+            background:
+              "linear-gradient(180deg, #EDEDED 0%, #E7E7E7 50%, #EDEDED 100%)",
+            height: "40vh",
+            background: "linear-gradient(180deg, #EDEDED 0%, #E7E7E7 50%, #EDEDED 100%)",
+borderTop: "1px solid #e3e3e3",
+borderBottom: "1px solid #e3e3e3",
+            zIndex: 0,                            // sits behind the content box
+            zIndex: 0, // behind content
+willChange: "transform",
+}}
+/>
 
-        /* Spacer inside the section so the sticky can release gracefully
-           after the stack meets the MegaNameText */
-        .release-space { height: 60vh; }
+        {/* Content that appears in front of the band */}
+        {/* Content over the stripe */}
+<div
+style={{
+position: "relative",
+@@ -179,7 +206,6 @@ export default function HomePage() {
+</h2>
+</div>
 
-        /* Parallax bar */
-        .parallax-section {
-          position: relative;
-          width: 100%;
-          height: 60vh;
-          background-image: url('/rainbowtess.png');
-          background-size: cover;
-          background-position: center center;
-          background-attachment: fixed; /* simple parallax */
-        }
-
-        /* Utility */
-        .section-pad { padding: 0 4vw; }
-      `}</style>
-
-      {/* Intro / Mega + Featured Stack */}
-      <section className="intro-section section-pad" aria-label="Intro Mega Stack">
-        {/* Sticky MegaNameText PNG (replaces prior text) */}
-        <div className="mega-sticky">
-          <img
-            src="/MegaNameText.png"
-            alt="Thiago Rocha Silvino — Mega Name"
-            className="mega-img"
-            draggable={false}
-          />
-        </div>
-
-        {/* Foreground & background locked to one another */}
-        <div className="feature-stack-wrapper" aria-label="Locked Featured Images">
-          <div className="feature-stack-aspect">
-            {/* BACK (always the very back) */}
-            <img
-              src="/featuredbackground.png"
-              alt="Featured background"
-              className="feature-img bg"
-              draggable={false}
-            />
-            {/* FRONT (overlays Mega + back) */}
-            <img
-              src="/featuredforeground.png"
-              alt="Featured foreground"
-              className="feature-img fg"
-              draggable={false}
-            />
-          </div>
-        </div>
-
-        {/* Give the sticky room to release after they meet */}
-        <div className="release-space" />
-      </section>
-
-      {/* 20px padding below pair before the parallax bar */}
-      <div style={{ height: 20 }} aria-hidden="true" />
-
-      {/* Parallax bar section using rainbowtess.png */}
-      <section className="parallax-section" aria-label="Parallax Bar" />
-
-      {/* Optional content below for testing scroll */}
-      <section className="section-pad" style={{ paddingTop: "8vh", paddingBottom: "12vh" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", lineHeight: 1.6 }}>
-          <h2 style={{ fontSize: "clamp(24px, 3vw, 40px)", marginBottom: 12 }}>Welcome</h2>
-          <p>
-            Replace this with real content. Behaviors above: MegaNameText is sticky 30px below the nav,
-            featured background & foreground are perfectly overlapped and scroll together (no slip),
-            then all scroll together once they meet. A simple parallax bar follows using
-            <code> background-attachment: fixed</code>.
-          </p>
-        </div>
-      </section>
-    </main>
-  );
-}
+          {/* Placeholder content row (swap with cards/projects later) */}
+<div
+style={{
+display: "grid",
+@@ -197,9 +223,8 @@ export default function HomePage() {
+}}
+>
+<p style={{ margin: 0, color: "#374151" }}>
+                This band scrolls **at a different speed** behind the content, creating depth
+                without being flashy. Replace this with a short studio statement, a CTA, or a
+                slim grid of two more projects.
+                This stripe scrolls at a different speed behind the content, creating depth
+                without distraction. Replace with a short studio statement or additional project teasers.
+</p>
+</div>
+</div>
