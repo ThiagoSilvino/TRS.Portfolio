@@ -72,10 +72,10 @@ export default function HomePage() {
               letterSpacing: "-0.01em",
               fontFamily:
                 "Space Grotesk, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
-              whiteSpace: "nowrap", // do not wrap
+              whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
-              fontSize: "clamp(2.2rem, 10vw, 12rem)", // shrinks before it ever wraps
+              fontSize: "clamp(2.2rem, 10vw, 12rem)", // shrinks before wrap
               textAlign: "center",
               position: "relative",
               zIndex: 2,
@@ -85,7 +85,7 @@ export default function HomePage() {
           </h1>
         </section>
 
-        {/* === DIVIDER / BREAK between name and layered image === */}
+        {/* === DIVIDER / BREAK === */}
         <div aria-hidden="true" style={{ maxWidth: 1280, margin: "1.25rem auto 1.75rem", padding: "0 1.5rem" }}>
           <div
             style={{
@@ -107,13 +107,15 @@ export default function HomePage() {
             padding: "0 1.5rem",
             height: "clamp(260px, 55vw, 520px)",
             zIndex: 1,
+            background: "#EEE",
+            borderRadius: 12,
           }}
           aria-label="Featured architecture image with layered parallax"
         >
           {/* Background image (behind text) */}
           <img
             ref={bgRef}
-            src="/Projects/FeaturedBackground.png"
+            src="/featuredbackground.png"   // <-- updated path + casing
             alt=""
             style={{
               position: "absolute",
@@ -127,11 +129,16 @@ export default function HomePage() {
               willChange: "transform",
             }}
           />
+
           {/* Foreground image (over text) */}
           <img
             ref={fgRef}
-            src="/Projects/FeaturedForeground.png"
+            src="/featuredforeground.png"   // <-- updated path + casing
             alt="Featured project foreground"
+            onError={(e) => {
+              // if missing, hide cleanly
+              e.currentTarget.style.display = "none";
+            }}
             style={{
               position: "absolute",
               inset: 0,
@@ -146,9 +153,8 @@ export default function HomePage() {
           />
         </section>
 
-        {/* === PARALLAX STRIPE BEHIND CONTENT (next section) === */}
+        {/* === PARALLAX STRIPE BEHIND CONTENT === */}
         <section style={{ position: "relative", overflow: "hidden", padding: "4rem 0", marginBottom: "4rem" }}>
-          {/* Band that moves behind */}
           <div
             ref={bandRef}
             aria-hidden="true"
@@ -165,7 +171,6 @@ export default function HomePage() {
               willChange: "transform",
             }}
           />
-          {/* Content over the stripe */}
           <div
             style={{
               position: "relative",
@@ -178,13 +183,7 @@ export default function HomePage() {
               textAlign: "center",
             }}
           >
-            <small
-              style={{
-                letterSpacing: ".12em",
-                textTransform: "uppercase",
-                color: "#6B7280",
-              }}
-            >
+            <small style={{ letterSpacing: ".12em", textTransform: "uppercase", color: "#6B7280" }}>
               Studio Notes
             </small>
             <h2
