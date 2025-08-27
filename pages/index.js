@@ -35,7 +35,7 @@ export default function Landing() {
             color: "#fff"
           }}
         >
-          THIAGO ROCHA SILVINO.
+          THIAGO ROCHA SILVINO
         </h1>
 
         {/* Text links */}
