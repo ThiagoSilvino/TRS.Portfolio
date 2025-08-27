@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useEffect, useRef } from "react";
 
 export default function HomePage() {
+  // Refs for parallax pieces
   const bgRef = useRef(null);
   const fgRef = useRef(null);
   const bandRef = useRef(null);
@@ -16,9 +17,9 @@ export default function HomePage() {
     if (reduceMotion) return;
 
     let rafId;
-    const speedBg = 0.15;   // behind text
-    const speedFg = 0.35;   // in front of text
-    const speedBand = 0.22; // stripe behind next section
+    const speedBg = 0.15;   // background image (behind name)
+    const speedFg = 0.35;   // foreground image (in front of name)
+    const speedBand = 0.22; // parallax stripe behind content
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
     const onScroll = () => {
@@ -59,23 +60,77 @@ export default function HomePage() {
         />
       </Head>
 
-      <main style={{ background: "#F7F7F5", color: "#111" }}>
-        <div style={{ height: "6vh" }} />
+      <main style={{ background: "#F7F7F5", color: "#111", minHeight: "100vh" }}>
+        {/* ===================== NAV ===================== */}
+        <header
+          style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 50,
+            backdropFilter: "blur(8px)",
+            background: "rgba(247,247,245,.85)",
+            borderBottom: "1px solid #e5e7eb",
+          }}
+        >
+          <nav
+            style={{
+              maxWidth: 1280,
+              margin: "0 auto",
+              padding: ".8rem 1.5rem",
+              display: "grid",
+              gridTemplateColumns: "1fr auto 1fr",
+              alignItems: "center",
+            }}
+          >
+            <div style={{ fontSize: "1rem" }}>🔍</div>
+            <div
+              style={{
+                textAlign: "center",
+                letterSpacing: ".18em",
+                textTransform: "uppercase",
+                fontWeight: 700,
+              }}
+            >
+              SILVINO
+            </div>
+            <div style={{ justifySelf: "end", display: "flex", gap: "1.25rem" }}>
+              <a href="/home#projects" style={navLink}>
+                Work
+              </a>
+              <a href="/about" style={navLink}>
+                Process
+              </a>
+              <a href="/about" style={navLink}>
+                About
+              </a>
+            </div>
+          </nav>
+        </header>
 
-        {/* === MEGA HEADLINE (single line, never wraps) === */}
-        <section style={{ position: "relative", maxWidth: 1280, margin: "0 auto", padding: "0 1.5rem" }}>
+        {/* small spacer so the name isn’t glued to the nav */}
+        <div style={{ height: "5vh" }} />
+
+        {/* ===================== MEGA NAME ===================== */}
+        <section
+          style={{
+            position: "relative",
+            maxWidth: 1280,
+            margin: "0 auto",
+            padding: "0 1.5rem",
+          }}
+        >
           <h1
             style={{
               margin: 0,
               lineHeight: 0.9,
-              fontWeight: 800,
+              fontWeight: 900,
               letterSpacing: "-0.01em",
               fontFamily:
                 "Space Grotesk, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
-              whiteSpace: "nowrap",
+              whiteSpace: "nowrap", // never wrap
               overflow: "hidden",
               textOverflow: "ellipsis",
-              fontSize: "clamp(2.2rem, 10vw, 12rem)", // shrinks before wrap
+              fontSize: "clamp(2.6rem, 10vw, 12rem)", // shrinks before wrapping
               textAlign: "center",
               position: "relative",
               zIndex: 2,
@@ -85,8 +140,15 @@ export default function HomePage() {
           </h1>
         </section>
 
-        {/* === DIVIDER / BREAK === */}
-        <div aria-hidden="true" style={{ maxWidth: 1280, margin: "1.25rem auto 1.75rem", padding: "0 1.5rem" }}>
+        {/* Divider / break between name and layered feature */}
+        <div
+          aria-hidden="true"
+          style={{
+            maxWidth: 1280,
+            margin: "1.25rem auto 1.75rem",
+            padding: "0 1.5rem",
+          }}
+        >
           <div
             style={{
               height: 8,
@@ -97,7 +159,7 @@ export default function HomePage() {
           />
         </div>
 
-        {/* === LAYERED IMAGE PARALLAX === */}
+        {/* ===================== LAYERED PARALLAX FEATURE ===================== */}
         <section
           id="projects"
           style={{
@@ -107,15 +169,16 @@ export default function HomePage() {
             padding: "0 1.5rem",
             height: "clamp(260px, 55vw, 520px)",
             zIndex: 1,
-            background: "#EEE",
+            background: "#EEE", // subtle placeholder while loading
             borderRadius: 12,
+            overflow: "hidden",
           }}
           aria-label="Featured architecture image with layered parallax"
         >
-          {/* Background image (behind text) */}
+          {/* Background image (behind name) */}
           <img
             ref={bgRef}
-            src="/featuredbackground.png"   // <-- updated path + casing
+            src="/featuredbackground.png"
             alt=""
             style={{
               position: "absolute",
@@ -130,10 +193,10 @@ export default function HomePage() {
             }}
           />
 
-          {/* Foreground image (over text) */}
+          {/* Foreground image (in front of name) */}
           <img
             ref={fgRef}
-            src="/featuredforeground.png"   // <-- updated path + casing
+            src="/featuredforeground.png"
             alt="Featured project foreground"
             onError={(e) => {
               // if missing, hide cleanly
@@ -153,8 +216,16 @@ export default function HomePage() {
           />
         </section>
 
-        {/* === PARALLAX STRIPE BEHIND CONTENT === */}
-        <section style={{ position: "relative", overflow: "hidden", padding: "4rem 0", marginBottom: "4rem" }}>
+        {/* ===================== PARALLAX STRIPE SECTION ===================== */}
+        <section
+          style={{
+            position: "relative",
+            overflow: "hidden",
+            padding: "4rem 0",
+            marginBottom: "3rem",
+          }}
+        >
+          {/* The band that moves behind the content */}
           <div
             ref={bandRef}
             aria-hidden="true"
@@ -164,13 +235,17 @@ export default function HomePage() {
               right: 0,
               top: "-20vh",
               height: "40vh",
-              background: "linear-gradient(180deg, #EDEDED 0%, #E7E7E7 50%, #EDEDED 100%)",
+              background:
+                "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.06) 100%), url('/rainbowtess.png') center/cover no-repeat",
+              opacity: 0.25, // keep it subtle
               borderTop: "1px solid #e3e3e3",
               borderBottom: "1px solid #e3e3e3",
               zIndex: 0,
               willChange: "transform",
             }}
           />
+
+          {/* Content over the stripe */}
           <div
             style={{
               position: "relative",
@@ -178,17 +253,23 @@ export default function HomePage() {
               maxWidth: 1100,
               margin: "0 auto",
               padding: "0 1.5rem",
-              display: "grid",
-              gap: "2rem",
               textAlign: "center",
+              display: "grid",
+              gap: "1rem",
             }}
           >
-            <small style={{ letterSpacing: ".12em", textTransform: "uppercase", color: "#6B7280" }}>
+            <small
+              style={{
+                letterSpacing: ".12em",
+                textTransform: "uppercase",
+                color: "#6B7280",
+              }}
+            >
               Studio Notes
             </small>
             <h2
               style={{
-                margin: "0.5rem 0 0",
+                margin: 0,
                 fontFamily: "Space Grotesk, Inter, system-ui",
                 fontSize: "clamp(1.6rem, 4.2vw, 2.4rem)",
                 fontWeight: 700,
@@ -196,14 +277,105 @@ export default function HomePage() {
             >
               Clarity, proportion, and craft.
             </h2>
-
-            <p style={{ margin: 0, color: "#374151", maxWidth: 820, marginInline: "auto" }}>
-              This stripe scrolls at a different speed behind the content, creating depth without distraction.
-              Replace this with a short studio statement or additional project teasers.
+            <p
+              style={{
+                margin: 0,
+                color: "#374151",
+                maxWidth: 820,
+                marginInline: "auto",
+              }}
+            >
+              A calm, minimal surface—built for browsing selected work quickly and elegantly.
             </p>
           </div>
         </section>
+
+        {/* ===================== OTHER PROJECTS ===================== */}
+        <section
+          aria-label="Other projects"
+          style={{ maxWidth: 1280, margin: "0 auto 4rem", padding: "0 1.5rem" }}
+        >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr",
+              gap: "1rem",
+            }}
+          >
+            {/* Card 1 */}
+            <article style={card}>
+              <img
+                src="/poster.jpg"
+                alt="Project thumbnail"
+                style={thumb}
+                loading="lazy"
+              />
+              <div style={cardMeta}>
+                <h3 style={{ margin: 0 }}>Courtyard House</h3>
+                <small style={{ color: "#6B7280" }}>Residential · 2023</small>
+              </div>
+            </article>
+
+            {/* Card 2 */}
+            <article style={card}>
+              <img
+                src="/Thiago_Silvino_SML_ABOUT.JPG"
+                alt="Project thumbnail"
+                style={thumb}
+                loading="lazy"
+              />
+              <div style={cardMeta}>
+                <h3 style={{ margin: 0 }}>Atrium Pavilion</h3>
+                <small style={{ color: "#6B7280" }}>Public · 2022</small>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        {/* ===================== FOOTER ===================== */}
+        <footer
+          style={{
+            borderTop: "1px solid #e5e7eb",
+            color: "#6B7280",
+            textAlign: "center",
+            padding: "2rem 1rem",
+          }}
+        >
+          © {new Date().getFullYear()} Thiago Rocha Silvino — All rights reserved.
+        </footer>
       </main>
     </>
   );
 }
+
+/* ---------- tiny style helpers ---------- */
+const navLink = {
+  textDecoration: "none",
+  color: "#111",
+  fontWeight: 600,
+};
+
+const card = {
+  display: "grid",
+  gridTemplateColumns: "220px 1fr",
+  gap: "1rem",
+  background: "#fff",
+  border: "1px solid #e5e7eb",
+  borderRadius: 12,
+  padding: "1rem",
+  boxShadow: "0 2px 12px rgba(0,0,0,.04)",
+};
+
+const thumb = {
+  width: "100%",
+  height: "160px",
+  objectFit: "cover",
+  borderRadius: 10,
+  background: "#eee",
+};
+
+const cardMeta = {
+  display: "grid",
+  alignContent: "center",
+  gap: ".35rem",
+};
