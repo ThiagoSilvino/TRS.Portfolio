@@ -252,3 +252,23 @@ function MenuColumn({ title, items }) {
     </div>
   );
 }
+// pages/_app.js
+import Head from "next/head";
+import "../styles/globals.css";
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <>
+      <Head>
+        {/* Global favicon */}
+        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
+      </Head>
+      <Component {...pageProps} />
+    </>
+  );
+}
+
+export default MyApp;
