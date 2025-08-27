@@ -92,7 +92,7 @@ export default function HomePage() {
                 fontWeight: 700,
               }}
             >
-              SILVINOX
+              SILVINO
             </div>
             <div style={{ justifySelf: "end", display: "flex", gap: "1.25rem" }}>
               <a href="/home#projects" style={navLink}>Work</a>
