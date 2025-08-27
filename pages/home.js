@@ -1,6 +1,7 @@
 // pages/home.js
 import Head from "next/head";
 import { useEffect, useRef } from "react";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   // Refs for parallax pieces
@@ -120,7 +121,7 @@ export default function HomePage() {
             style={{
               display: "block",
               margin: "0 auto",
-              width: "min(1800px, 96%)",  // large but responsive
+              width: "min(1800px, 96%)",
               height: "auto",
               imageRendering: "auto",
               userSelect: "none",
@@ -128,15 +129,8 @@ export default function HomePage() {
           />
         </section>
 
-        {/* Divider / break between name image and layered feature */}
-        <div
-          aria-hidden="true"
-          style={{
-            maxWidth: 1280,
-            margin: "1.25rem auto 1.75rem",
-            padding: "0 1.5rem",
-          }}
-        >
+        {/* Divider / break */}
+        <div aria-hidden="true" style={{ maxWidth: 1280, margin: "1.25rem auto 1.75rem", padding: "0 1.5rem" }}>
           <div
             style={{
               height: 8,
@@ -163,7 +157,6 @@ export default function HomePage() {
           }}
           aria-label="Featured architecture image with layered parallax"
         >
-          {/* Background image (behind) */}
           <img
             ref={bgRef}
             src="/featuredbackground.png"
@@ -180,8 +173,6 @@ export default function HomePage() {
               willChange: "transform",
             }}
           />
-
-          {/* Foreground image (in front) */}
           <img
             ref={fgRef}
             src="/featuredforeground.png"
@@ -212,7 +203,6 @@ export default function HomePage() {
             marginBottom: "3rem",
           }}
         >
-          {/* The band that moves behind the content */}
           <div
             ref={bandRef}
             aria-hidden="true"
@@ -231,8 +221,6 @@ export default function HomePage() {
               willChange: "transform",
             }}
           />
-
-          {/* Content over the stripe */}
           <div
             style={{
               position: "relative",
@@ -245,13 +233,7 @@ export default function HomePage() {
               gap: "1rem",
             }}
           >
-            <small
-              style={{
-                letterSpacing: ".12em",
-                textTransform: "uppercase",
-                color: "#6B7280",
-              }}
-            >
+            <small style={{ letterSpacing: ".12em", textTransform: "uppercase", color: "#6B7280" }}>
               Studio Notes
             </small>
             <h2
@@ -264,32 +246,15 @@ export default function HomePage() {
             >
               Clarity, proportion, and craft.
             </h2>
-            <p
-              style={{
-                margin: 0,
-                color: "#374151",
-                maxWidth: 820,
-                marginInline: "auto",
-              }}
-            >
+            <p style={{ margin: 0, color: "#374151", maxWidth: 820, marginInline: "auto" }}>
               A calm, minimal surface—built for browsing selected work quickly and elegantly.
             </p>
           </div>
         </section>
 
         {/* ===================== OTHER PROJECTS ===================== */}
-        <section
-          aria-label="Other projects"
-          style={{ maxWidth: 1280, margin: "0 auto 4rem", padding: "0 1.5rem" }}
-        >
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr",
-              gap: "1rem",
-            }}
-          >
-            {/* Card 1 */}
+        <section aria-label="Other projects" style={{ maxWidth: 1280, margin: "0 auto 4rem", padding: "0 1.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
             <article style={card}>
               <img src="/poster.jpg" alt="Project thumbnail" style={thumb} loading="lazy" />
               <div style={cardMeta}>
@@ -297,15 +262,8 @@ export default function HomePage() {
                 <small style={{ color: "#6B7280" }}>Residential · 2023</small>
               </div>
             </article>
-
-            {/* Card 2 */}
             <article style={card}>
-              <img
-                src="/Thiago_Silvino_SML_ABOUT.JPG"
-                alt="Project thumbnail"
-                style={thumb}
-                loading="lazy"
-              />
+              <img src="/Thiago_Silvino_SML_ABOUT.JPG" alt="Project thumbnail" style={thumb} loading="lazy" />
               <div style={cardMeta}>
                 <h3 style={{ margin: 0 }}>Atrium Pavilion</h3>
                 <small style={{ color: "#6B7280" }}>Public · 2022</small>
@@ -314,17 +272,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===================== FOOTER ===================== */}
-        <footer
-          style={{
-            borderTop: "1px solid #e5e7eb",
-            color: "#6B7280",
-            textAlign: "center",
-            padding: "2rem 1rem",
-          }}
-        >
-          © {new Date().getFullYear()} Thiago Rocha Silvino — All rights reserved.
-        </footer>
+        {/* ===================== FOOTER (shared) ===================== */}
+        <Footer />
       </main>
     </>
   );
