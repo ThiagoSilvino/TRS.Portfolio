@@ -1,72 +1,159 @@
 // pages/home.js
-import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
 
 export default function HomePage() {
-  const router = useRouter();
-  const cameFromLanding = router.query.from === "landing";
+  const bgRef = useRef(null);
+  const fgRef = useRef(null);
+  const titleRef = useRef(null);
+  const reduceMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  useEffect(() => {
+    if (reduceMotion) return;
+
+    let rafId;
+    const speedBg = 0.15;   // lower = slower (behind)
+    const speedFg = 0.35;   // higher = faster (in front)
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+    const onScroll = () => {
+      // use rAF so we don’t thrash layout
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const y = window.scrollY || 0;
+
+        // translate background slightly up as you scroll
+        // (feels like it’s receding behind the headline)
+        if (bgRef.current) {
+          const t = clamp(y * speedBg, -160, 220);
+          bgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
+        }
+
+        // translate foreground a bit more so it “overtakes” the headline
+        if (fgRef.current) {
+          const t = clamp(y * speedFg - 60, -60, 360);
+          fgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
+        }
+      });
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [reduceMotion]);
 
   return (
-    <main style={{ maxWidth: 1280, margin: "0 auto", padding: "2rem 1.5rem" }}>
-      {/* Hero */}
-      <section style={{ padding: "min(6vw,5rem) 0 1rem" }}>
-        <div style={kicker}>Practice</div>
+    <main style={{ background: "#F7F7F5", color: "#111" }}>
+      {/* Top spacer so you land on the mega headline nicely */}
+      <div style={{ height: "6vh" }} />
+
+      {/* === MEGA HEADLINE === */}
+      <section
+        style={{
+          position: "relative",
+          maxWidth: 1280,
+          margin: "0 auto",
+          padding: "0 1.5rem",
+        }}
+      >
         <h1
-          id="hero-name"
+          ref={titleRef}
           style={{
-            ...display,
-            ...(cameFromLanding ? {} : animateIn)
+            margin: 0,
+            lineHeight: 0.9,
+            fontWeight: 800,
+            letterSpacing: "-0.01em",
+            fontFamily:
+              "Space Grotesk, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
+            fontSize: "clamp(3.2rem, 16vw, 12rem)", // BIG like Archouse
+            textAlign: "center",
+            // keep it behind the foreground but above the background
+            position: "relative",
+            zIndex: 2,
           }}
         >
           THIAGO ROCHA SILVINO
         </h1>
-        <p style={lede}>Selected works exploring craft, context, and clarity.</p>
       </section>
 
-      {/* Projects (simple demo grid) */}
-      <section id="projects">
-        <div style={grid}>
-          <Tile title="Manitoba Curling Centre" tags="Cultural · 2024 · Concept → Build" image="/Projects/Featured.jpg" span={2} />
-          <Tile title="USAG Dorms" tags="Residential · 2023" image="/Projects/HERO_USAG_Dorm1.jpg" />
-          <Tile title="LSU Arena" tags="Public · 2022" image="/Projects/Hero_LSU_Arena 1.jpg" />
-          <Tile title="Timber Library" tags="Institutional · 2024" image="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2069&auto=format&fit=crop" />
-          <Tile title="East Hall" tags="Education · 2021" image="https://images.unsplash.com/photo-1465804575741-338df8554e38?q=80&w=2070&auto=format&fit=crop" />
-        </div>
+      {/* === LAYERED IMAGE STACK === */}
+      <section
+        style={{
+          position: "relative",
+          maxWidth: 1280,
+          margin: "2rem auto 4rem",
+          padding: "0 1.5rem",
+          height: "clamp(260px, 55vw, 520px)", // responsive height
+        }}
+        aria-label="Featured architecture image with layered parallax"
+      >
+        {/* Background image (behind text) */}
+        <img
+          ref={bgRef}
+          src="/Projects/FeaturedBackground.png"
+          alt=""
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            borderRadius: 12,
+            zIndex: 1, // behind headline
+            filter: "grayscale(20%)",
+            willChange: "transform",
+          }}
+        />
 
-        <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "2rem" }}>
-          <a href="#projects" className="btn">View All Projects</a>
-          <a href="/viewer" className="btn">Open 3D Viewer</a>
-        </div>
+        {/* Foreground image (over text) */}
+        <img
+          ref={fgRef}
+          src="/Projects/FeaturedForeground.png"
+          alt="Featured project foreground"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            borderRadius: 12,
+            zIndex: 3, // in front of headline
+            willChange: "transform",
+            pointerEvents: "none",
+          }}
+        />
+      </section>
+
+      {/* Optional caption/intro block */}
+      <section
+        style={{
+          maxWidth: 820,
+          margin: "0 auto 6rem",
+          padding: "0 1.5rem",
+          color: "#374151",
+          textAlign: "center",
+        }}
+      >
+        <small
+          style={{
+            display: "block",
+            letterSpacing: ".12em",
+            textTransform: "uppercase",
+            color: "#6B7280",
+          }}
+        >
+          We Are TRS
+        </small>
+        <p style={{ marginTop: "0.75rem", fontSize: "1.05rem", lineHeight: 1.6 }}>
+          For us, architecture is about connection. We shape each space with refined simplicity,
+          bringing purpose and clarity together in a way that leaves a lasting impression.
+        </p>
       </section>
     </main>
   );
-}
-
-function Tile({ title, tags, image, span = 1 }) {
-  return (
-    <article style={{ ...tile, gridColumn: span === 2 ? "span 2" : "auto" }}>
-      <img src={image} alt={title} style={tileMedia} />
-      <div style={tileCap}>
-        <h3 style={{ margin: 0, fontSize: "1.15rem", fontWeight: 700 }}>{title}</h3>
-        <div style={{ opacity: .85, fontSize: ".95rem" }}>{tags}</div>
-      </div>
-    </article>
-  );
-}
-
-/* styles */
-const kicker = { textTransform: "uppercase", letterSpacing: ".12em", fontSize: ".8rem", color: "#6B7280" };
-const display = { fontSize: "clamp(2rem, 5vw, 3.2rem)", lineHeight: 1.1, margin: ".5rem 0 1rem", whiteSpace: "nowrap" };
-const animateIn = { transform: "translateY(10px)", opacity: 0, animation: "fadeUp .6s ease forwards" };
-const lede = { maxWidth: "70ch", color: "#374151", fontSize: "1.05rem" };
-const grid = { display: "grid", gap: "clamp(1rem, 2.8vw, 2rem)", gridTemplateColumns: "1fr" };
-const tile = { background: "#fff", borderRadius: 14, overflow: "hidden", boxShadow: "0 2px 24px rgba(0,0,0,.08)", position: "relative" };
-const tileMedia = { aspectRatio: "16 / 10", width: "100%", objectFit: "cover", display: "block" };
-const tileCap = { position: "absolute", left: 0, right: 0, bottom: 0, padding: "1rem 1rem 1.2rem", color: "#fff", background: "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.65) 85%)" };
-
-/* keyframes (inlined for simplicity) */
-if (typeof document !== "undefined" && !document.getElementById("fadeUpKey")) {
-  const style = document.createElement("style");
-  style.id = "fadeUpKey";
-  style.innerHTML = `@keyframes fadeUp { to { opacity: 1; transform: translateY(0) } }`;
-  document.head.appendChild(style);
 }
