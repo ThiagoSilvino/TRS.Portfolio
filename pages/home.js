@@ -7,8 +7,12 @@
 // - /rainbowtess.png
 
 import React from "react";
+import { useRouter } from "next/router";
 
 export default function Home() {
+  const { basePath } = useRouter();
+  const prefix = basePath || ""; // handles deployments with a basePath (e.g., GitHub Pages)
+
   return (
     <main>
       <style jsx global>{`
@@ -64,12 +68,11 @@ export default function Home() {
            after the stack meets the MegaNameText */
         .release-space { height: 60vh; }
 
-        /* Parallax bar */
+        /* Parallax bar (image set inline so basePath is respected) */
         .parallax-section {
           position: relative;
           width: 100%;
           height: 60vh;
-          background-image: url('/rainbowtess.png');
           background-size: cover;
           background-position: center center;
           background-attachment: fixed; /* simple parallax */
@@ -82,9 +85,9 @@ export default function Home() {
       {/* Intro / Mega + Featured Stack */}
       <section className="intro-section section-pad" aria-label="Intro Mega Stack">
         {/* Sticky MegaNameText PNG (replaces prior text) */}
-        <div className="mega-sticky">
+        <div className="mega-sticky" id="hero-name">
           <img
-            src="/Projects/MegaNameText.png"
+            src={`${prefix}/Projects/MegaNameText.png`}
             alt="Thiago Rocha Silvino — Mega Name"
             className="mega-img"
             draggable={false}
@@ -96,14 +99,14 @@ export default function Home() {
           <div className="feature-stack-aspect">
             {/* BACK (always the very back) */}
             <img
-              src="/Projects/featuredbackground.png"
+              src={`${prefix}/Projects/featuredbackground.png`}
               alt="Featured background"
               className="feature-img bg"
               draggable={false}
             />
             {/* FRONT (overlays Mega + back) */}
             <img
-              src="/Projects/featuredforeground.png"
+              src={`${prefix}/Projects/featuredforeground.png`}
               alt="Featured foreground"
               className="feature-img fg"
               draggable={false}
@@ -118,8 +121,12 @@ export default function Home() {
       {/* 20px padding below pair before the parallax bar */}
       <div style={{ height: 20 }} aria-hidden="true" />
 
-      {/* Parallax bar section using rainbowtess.png */}
-      <section className="parallax-section" aria-label="Parallax Bar" />
+      {/* Parallax bar section using rainbowtess.png (inline bg so basePath works) */}
+      <section
+        className="parallax-section"
+        aria-label="Parallax Bar"
+        style={{ backgroundImage: `url('${prefix}/rainbowtess.png')` }}
+      />
 
       {/* Optional content below for testing scroll */}
       <section className="section-pad" style={{ paddingTop: "8vh", paddingBottom: "12vh" }}>
