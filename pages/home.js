@@ -1,146 +1,210 @@
-// pages/home.js (Next.js pages router)
-// Implements: MegaNameText sticky + locked featured foreground/background stack + parallax bar
-// Assets expected:
-// - /Projects/MegaNameText.png
-// - /Projects/featuredforeground.png
-// - /Projects/featuredbackground.png
-// - /rainbowtess.png
+// pages/home.js
+import Head from "next/head";
+import { useEffect, useRef } from "react";
 
-import React from "react";
-// Robust asset paths: import images so Next resolves correct URL (works with basePath/assetPrefix)
-import megaNamePng from "../public/Projects/MegaNameText.png";
-import featuredBg   from "../public/Projects/featuredbackground.png";
-import featuredFg   from "../public/Projects/featuredforeground.png";
-import rainbowTess  from "../public/rainbowtess.png";
+export default function HomePage() {
+  const bgRef = useRef(null);
+  const fgRef = useRef(null);
+  const bandRef = useRef(null);
 
-export default function Home() {
+  const reduceMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  useEffect(() => {
+    if (reduceMotion) return;
+
+    let rafId;
+    const speedBg = 0.15;   // behind text
+    const speedFg = 0.35;   // in front of text
+    const speedBand = 0.22; // stripe behind next section
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+    const onScroll = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const y = window.scrollY || 0;
+
+        if (bgRef.current) {
+          const t = clamp(y * speedBg, -160, 220);
+          bgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
+        }
+        if (fgRef.current) {
+          const t = clamp(y * speedFg - 60, -60, 360);
+          fgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
+        }
+        if (bandRef.current) {
+          const t = clamp(y * speedBand, -200, 400);
+          bandRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
+        }
+      });
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [reduceMotion]);
+
   return (
-    <main>
-      <style jsx global>{`
-        :root { --nav-height: 64px; }
+    <>
+      <Head>
+        <title>Home — Thiago Rocha Silvino</title>
+        <meta
+          name="description"
+          content="Selected works by Thiago Rocha Silvino — elegant, simple, and creative architecture & design."
+        />
+      </Head>
 
-        .intro-section {
-          position: relative;
-          min-height: 170vh; /* room so sticky can hold until images meet it */
-        }
+      <main style={{ background: "#F7F7F5", color: "#111" }}>
+        <div style={{ height: "6vh" }} />
 
-        /* MEGA NAME (middle layer) */
-        .mega-sticky {
-          position: sticky;
-          top: calc(var(--nav-height) + 30px); /* 30px below nav */
-          z-index: 15; /* between background (5) and foreground (25) */
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          pointer-events: none; /* decorative */
-        }
-        .mega-img {
-          max-width: min(92vw, 1400px);
-          height: auto;
-          display: block;
-          margin: 0 auto;
-          user-select: none;
-        }
+        {/* === MEGA HEADLINE (single line, never wraps) === */}
+        <section style={{ position: "relative", maxWidth: 1280, margin: "0 auto", padding: "0 1.5rem" }}>
+          <h1
+            style={{
+              margin: 0,
+              lineHeight: 0.9,
+              fontWeight: 800,
+              letterSpacing: "-0.01em",
+              fontFamily:
+                "Space Grotesk, Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif",
+              whiteSpace: "nowrap", // do not wrap
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              fontSize: "clamp(2.2rem, 10vw, 12rem)", // shrinks before it ever wraps
+              textAlign: "center",
+              position: "relative",
+              zIndex: 2,
+            }}
+          >
+            THIAGO ROCHA SILVINO
+          </h1>
+        </section>
 
-        /* FEATURED STACK (back + front locked together) */
-        .feature-stack-wrapper {
-          position: relative;
-          max-width: min(92vw, 1400px);
-          margin: 10px auto 0; /* 10px below MegaNameText */
-        }
-        .feature-stack-aspect {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 16/9; /* adjust if your art has a different ratio */
-        }
-        .feature-img {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: contain; /* ensures perfect overlap / lock */
-          user-select: none;
-          pointer-events: none;
-        }
-        .bg { z-index: 5; }
-        .fg { z-index: 25; }
-
-        /* Spacer inside the section so the sticky can release gracefully
-           after the stack meets the MegaNameText */
-        .release-space { height: 60vh; }
-
-        /* Parallax bar (image set inline so basePath is respected) */
-        .parallax-section {
-          position: relative;
-          width: 100%;
-          height: 60vh;
-          background-size: cover;
-          background-position: center center;
-          background-attachment: fixed; /* simple parallax */
-        }
-
-        /* Utility */
-        .section-pad { padding: 0 4vw; }
-      `}</style>
-
-      {/* Intro / Mega + Featured Stack */}
-      <section className="intro-section section-pad" aria-label="Intro Mega Stack">
-        {/* Sticky MegaNameText PNG (replaces prior text) */}
-        <div className="mega-sticky" id="hero-name">
-          <img
-            src={megaNamePng.src}
-            alt="Thiago Rocha Silvino — Mega Name"
-            className="mega-img"
-            draggable={false}
+        {/* === DIVIDER / BREAK between name and layered image === */}
+        <div aria-hidden="true" style={{ maxWidth: 1280, margin: "1.25rem auto 1.75rem", padding: "0 1.5rem" }}>
+          <div
+            style={{
+              height: 8,
+              background: "#E7E7E7",
+              borderRadius: 999,
+              boxShadow: "inset 0 -1px 0 #e3e3e3, inset 0 1px 0 #efefef",
+            }}
           />
         </div>
 
-        {/* Foreground & background locked to one another */}
-        <div className="feature-stack-wrapper" aria-label="Locked Featured Images">
-          <div className="feature-stack-aspect">
-            {/* BACK (always the very back) */}
-            <img
-              src={featuredBg.src}
-              alt="Featured background"
-              className="feature-img bg"
-              draggable={false}
-            />
-            {/* FRONT (overlays Mega + back) */}
-            <img
-              src={featuredFg.src}
-              alt="Featured foreground"
-              className="feature-img fg"
-              draggable={false}
-            />
+        {/* === LAYERED IMAGE PARALLAX === */}
+        <section
+          id="projects"
+          style={{
+            position: "relative",
+            maxWidth: 1280,
+            margin: "0 auto 4rem",
+            padding: "0 1.5rem",
+            height: "clamp(260px, 55vw, 520px)",
+            zIndex: 1,
+          }}
+          aria-label="Featured architecture image with layered parallax"
+        >
+          {/* Background image (behind text) */}
+          <img
+            ref={bgRef}
+            src="/Projects/FeaturedBackground.png"
+            alt=""
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              borderRadius: 12,
+              zIndex: 1,
+              filter: "grayscale(20%)",
+              willChange: "transform",
+            }}
+          />
+          {/* Foreground image (over text) */}
+          <img
+            ref={fgRef}
+            src="/Projects/FeaturedForeground.png"
+            alt="Featured project foreground"
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              borderRadius: 12,
+              zIndex: 3,
+              willChange: "transform",
+              pointerEvents: "none",
+            }}
+          />
+        </section>
+
+        {/* === PARALLAX STRIPE BEHIND CONTENT (next section) === */}
+        <section style={{ position: "relative", overflow: "hidden", padding: "4rem 0", marginBottom: "4rem" }}>
+          {/* Band that moves behind */}
+          <div
+            ref={bandRef}
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: "-20vh",
+              height: "40vh",
+              background: "linear-gradient(180deg, #EDEDED 0%, #E7E7E7 50%, #EDEDED 100%)",
+              borderTop: "1px solid #e3e3e3",
+              borderBottom: "1px solid #e3e3e3",
+              zIndex: 0,
+              willChange: "transform",
+            }}
+          />
+          {/* Content over the stripe */}
+          <div
+            style={{
+              position: "relative",
+              zIndex: 1,
+              maxWidth: 1100,
+              margin: "0 auto",
+              padding: "0 1.5rem",
+              display: "grid",
+              gap: "2rem",
+              textAlign: "center",
+            }}
+          >
+            <small
+              style={{
+                letterSpacing: ".12em",
+                textTransform: "uppercase",
+                color: "#6B7280",
+              }}
+            >
+              Studio Notes
+            </small>
+            <h2
+              style={{
+                margin: "0.5rem 0 0",
+                fontFamily: "Space Grotesk, Inter, system-ui",
+                fontSize: "clamp(1.6rem, 4.2vw, 2.4rem)",
+                fontWeight: 700,
+              }}
+            >
+              Clarity, proportion, and craft.
+            </h2>
+
+            <p style={{ margin: 0, color: "#374151", maxWidth: 820, marginInline: "auto" }}>
+              This stripe scrolls at a different speed behind the content, creating depth without distraction.
+              Replace this with a short studio statement or additional project teasers.
+            </p>
           </div>
-        </div>
-
-        {/* Give the sticky room to release after they meet */}
-        <div className="release-space" />
-      </section>
-
-      {/* 20px padding below pair before the parallax bar */}
-      <div style={{ height: 20 }} aria-hidden="true" />
-
-      {/* Parallax bar section using rainbowtess.png (inline bg so basePath works) */}
-      <section
-        className="parallax-section"
-        aria-label="Parallax Bar"
-        style={{ backgroundImage: `url(${rainbowTess.src})` }}
-      />
-
-      {/* Optional content below for testing scroll */}
-      <section className="section-pad" style={{ paddingTop: "8vh", paddingBottom: "12vh" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", lineHeight: 1.6 }}>
-          <h2 style={{ fontSize: "clamp(24px, 3vw, 40px)", marginBottom: 12 }}>Welcome</h2>
-          <p>
-            Replace this with real content. Behaviors above: MegaNameText is sticky 30px below the nav,
-            featured background & foreground are perfectly overlapped and scroll together (no slip),
-            then all scroll together once they meet. A simple parallax bar follows using
-            <code> background-attachment: fixed</code>.
-          </p>
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </>
   );
 }
