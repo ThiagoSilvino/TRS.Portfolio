@@ -1,376 +1,92 @@
-// pages/home.js
+// pages/about.js
 import Head from "next/head";
-import { useEffect, useRef } from "react";
 import Footer from "../components/Footer";
 
-export default function HomePage() {
-  // Refs for parallax pieces
-  const bgRef = useRef(null);
-  const fgRef = useRef(null);
-  const bandRef = useRef(null);
-
-  const reduceMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  useEffect(() => {
-    if (reduceMotion) return;
-
-    let rafId;
-    const speedBg = 0.15;   // background image (behind)
-    const speedFg = 0.35;   // foreground image (in front)
-    const speedBand = 0.22; // parallax stripe
-    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-
-    const onScroll = () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        const y = window.scrollY || 0;
-
-        if (bgRef.current) {
-          const t = clamp(y * speedBg, -160, 220);
-          bgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
-        }
-        if (fgRef.current) {
-          const t = clamp(y * speedFg - 60, -60, 360);
-          fgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
-        }
-        if (bandRef.current) {
-          const t = clamp(y * speedBand, -200, 400);
-          bandRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
-        }
-      });
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [reduceMotion]);
-
+export default function About() {
   return (
     <>
       <Head>
-        <title>Home — Thiago Rocha Silvino</title>
+        <title>About — Thiago Rocha Silvino</title>
         <meta
           name="description"
-          content="Selected works by Thiago Rocha Silvino — elegant, simple, and creative architecture & design."
+          content="About & contact — background, skills, and quick ways to reach Thiago Rocha Silvino."
         />
       </Head>
 
-      <main style={{ background: "#F7F7F5", color: "#111", minHeight: "100vh" }}>
-        {/* ===================== NAV (updated to hamburger) ===================== */}
-        <header
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-            backdropFilter: "blur(8px)",
-            background: "rgba(247,247,245,.85)",
-            borderBottom: "1px solid #e5e7eb",
-          }}
-        >
-          <nav
-            style={{
-              maxWidth: 1280,
-              margin: "0 auto",
-              padding: ".8rem 1.5rem",
-              display: "grid",
-              gridTemplateColumns: "1fr auto 1fr",
-              alignItems: "center",
-            }}
-          >
-            {/* Left: search icon (unchanged) */}
-            <div style={{ fontSize: "1rem" }}>🔍</div>
-
-            {/* Center: brand (unchanged) */}
-            <div
-              style={{
-                textAlign: "center",
-                letterSpacing: ".18em",
-                textTransform: "uppercase",
-                fontWeight: 700,
-              }}
-            >
-              SILVINO
-            </div>
-
-            {/* Right: hamburger menu (replaces Work/Process/About) */}
-            <div style={{ justifySelf: "end" }}>
-              <button
-                aria-label="Open menu"
-                style={{
-                  appearance: "none",
-                  border: "1px solid #d1d5db",
-                  background: "#fff",
-                  color: "#111",
-                  width: 40,
-                  height: 40,
-                  borderRadius: 10,
-                  fontSize: 20,
-                  lineHeight: 1,
-                  display: "grid",
-                  placeItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                ☰
-              </button>
-            </div>
-          </nav>
+      <main style={{ background: "#F7F7F5", color: "#111" }}>
+        <header style={{ maxWidth: 1280, margin: "0 auto", padding: "2rem 1.5rem" }}>
+          <h1 style={{ margin: 0, fontWeight: 800, letterSpacing: ".01em" }}>About & Contact</h1>
+          <p style={{ maxWidth: 720, color: "#374151" }}>
+            I create elegant, simple, and human-centered work. Below is a quick snapshot of who I am,
+            what I do, and the easiest ways to reach me.
+          </p>
+          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginTop: "0.75rem" }}>
+            <a href="/portfolio.pdf" download style={btnSecondary}>Download Portfolio (PDF)</a>
+            <a href="/resume.pdf" download style={btnSecondary}>Download Resume (PDF)</a>
+          </div>
         </header>
 
-        {/* small spacer so the hero isn’t glued to the nav */}
-        <div style={{ height: "5vh" }} />
-
-        {/* ===================== HERO NAME IMAGE ===================== */}
         <section
+          id="contact"
           style={{
-            position: "relative",
-            maxWidth: 1280,
-            margin: "0 auto",
-            padding: "0 1.5rem",
-          }}
-        >
-          <img
-            src="/meganametext.png"
-            alt="Thiago Rocha Silvino"
-            draggable={false}
-            style={{
-              display: "block",
-              margin: "0 auto",
-              width: "min(1800px, 96%)",  // large but responsive
-              height: "auto",
-              imageRendering: "auto",
-              userSelect: "none",
-            }}
-          />
-        </section>
-
-        {/* Divider / break between name image and layered feature */}
-        <div
-          aria-hidden="true"
-          style={{
-            maxWidth: 1280,
-            margin: "1.25rem auto 1.75rem",
-            padding: "0 1.5rem",
-          }}
-        >
-          <div
-            style={{
-              height: 8,
-              background: "#E7E7E7",
-              borderRadius: 999,
-              boxShadow: "inset 0 -1px 0 #e3e3e3, inset 0 1px 0 #efefef",
-            }}
-          />
-        </div>
-
-        {/* ===================== LAYERED PARALLAX FEATURE ===================== */}
-        <section
-          id="projects"
-          style={{
-            position: "relative",
-            maxWidth: 1280,
+            maxWidth: 1100,
             margin: "0 auto 4rem",
             padding: "0 1.5rem",
-            height: "clamp(260px, 55vw, 520px)",
-            zIndex: 1,
-            background: "#EEE",
-            borderRadius: 12,
-            overflow: "hidden",
-          }}
-          aria-label="Featured architecture image with layered parallax"
-        >
-          {/* Background image (behind) */}
-          <img
-            ref={bgRef}
-            src="/featuredbackground.png"
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 12,
-              zIndex: 1,
-              filter: "grayscale(20%)",
-              willChange: "transform",
-            }}
-          />
-
-          {/* Foreground image (in front) */}
-          <img
-            ref={fgRef}
-            src="/featuredforeground.png"
-            alt="Featured project foreground"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 12,
-              zIndex: 3,
-              willChange: "transform",
-              pointerEvents: "none",
-            }}
-          />
-        </section>
-
-        {/* ===================== PARALLAX STRIPE SECTION ===================== */}
-        <section
-          style={{
-            position: "relative",
-            overflow: "hidden",
-            padding: "4rem 0",
-            marginBottom: "3rem",
+            display: "grid",
+            gap: "1.5rem",
           }}
         >
-          {/* The band that moves behind the content */}
-          <div
-            ref={bandRef}
-            aria-hidden="true"
+          <article
             style={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              top: "-20vh",
-              height: "40vh",
-              background:
-                "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.06) 100%), url('/rainbowtess.png') center/cover no-repeat",
-              opacity: 0.25,
-              borderTop: "1px solid #e3e3e3",
-              borderBottom: "1px solid #e3e3e3",
-              zIndex: 0,
-              willChange: "transform",
-            }}
-          />
-
-          {/* Content over the stripe */}
-          <div
-            style={{
-              position: "relative",
-              zIndex: 1,
-              maxWidth: 1100,
-              margin: "0 auto",
-              padding: "0 1.5rem",
-              textAlign: "center",
-              display: "grid",
-              gap: "1rem",
+              background: "#fff",
+              border: "1px solid #e5e7eb",
+              borderRadius: 12,
+              padding: "1.25rem 1.5rem",
+              boxShadow: "0 2px 12px rgba(0,0,0,.04)",
             }}
           >
-            <small
-              style={{
-                letterSpacing: ".12em",
-                textTransform: "uppercase",
-                color: "#6B7280",
-              }}
-            >
-              Studio Notes
-            </small>
-            <h2
-              style={{
-                margin: 0,
-                fontFamily: "Space Grotesk, Inter, system-ui",
-                fontSize: "clamp(1.6rem, 4.2vw, 2.4rem)",
-                fontWeight: 700,
-              }}
-            >
-              Clarity, proportion, and craft.
-            </h2>
-            <p
-              style={{
-                margin: 0,
-                color: "#374151",
-                maxWidth: 820,
-                marginInline: "auto",
-              }}
-            >
-              A calm, minimal surface—built for browsing selected work quickly and elegantly.
-            </p>
-          </div>
+            <h2 style={{ marginTop: 0 }}>Get in touch</h2>
+            <form style={{ display: "grid", gap: "0.75rem", maxWidth: 520 }}>
+              <input placeholder="Your Name" style={input} />
+              <input placeholder="Your Email" type="email" style={input} />
+              <input placeholder="Subject (optional)" style={input} />
+              <textarea placeholder="Message" rows={5} style={input} />
+              <button type="submit" style={btnPrimary}>Send Message</button>
+            </form>
+          </article>
         </section>
 
-        {/* ===================== OTHER PROJECTS ===================== */}
-        <section
-          aria-label="Other projects"
-          style={{ maxWidth: 1280, margin: "0 auto 4rem", padding: "0 1.5rem" }}
-        >
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr",
-              gap: "1rem",
-            }}
-          >
-            {/* Card 1 */}
-            <article style={card}>
-              <img src="/poster.jpg" alt="Project thumbnail" style={thumb} loading="lazy" />
-              <div style={cardMeta}>
-                <h3 style={{ margin: 0 }}>Courtyard House</h3>
-                <small style={{ color: "#6B7280" }}>Residential · 2023</small>
-              </div>
-            </article>
-
-            {/* Card 2 */}
-            <article style={card}>
-              <img
-                src="/Thiago_Silvino_SML_ABOUT.JPG"
-                alt="Project thumbnail"
-                style={thumb}
-                loading="lazy"
-              />
-              <div style={cardMeta}>
-                <h3 style={{ margin: 0 }}>Atrium Pavilion</h3>
-                <small style={{ color: "#6B7280" }}>Public · 2022</small>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        {/* ===================== FOOTER (shared) ===================== */}
         <Footer />
       </main>
     </>
   );
 }
 
-/* ---------- tiny style helpers ---------- */
-const navLink = {
-  textDecoration: "none",
-  color: "#111",
+const btnPrimary = {
+  display: "inline-block",
+  padding: ".8rem 1.2rem",
+  borderRadius: 10,
   fontWeight: 600,
+  color: "#fff",
+  background: "#4C7DFF",
+  border: "1px solid #3b67d1",
 };
 
-const card = {
-  display: "grid",
-  gridTemplateColumns: "220px 1fr",
-  gap: "1rem",
+const btnSecondary = {
+  display: "inline-block",
+  padding: ".65rem 1rem",
+  borderRadius: 999,
+  fontWeight: 600,
+  color: "#111",
   background: "#fff",
   border: "1px solid #e5e7eb",
-  borderRadius: 12,
-  padding: "1rem",
-  boxShadow: "0 2px 12px rgba(0,0,0,.04)",
+  textDecoration: "none",
 };
 
-const thumb = {
+const input = {
   width: "100%",
-  height: "160px",
-  objectFit: "cover",
-  borderRadius: 10,
-  background: "#eee",
-};
-
-const cardMeta = {
-  display: "grid",
-  alignContent: "center",
-  gap: ".35rem",
+  border: "1px solid #e5e7eb",
+  borderRadius: 8,
+  padding: ".75rem",
+  background: "#fff",
 };
