@@ -1,7 +1,7 @@
 // components/Footer.js
 export default function Footer() {
   return (
-    <Footer
+    <footer
       style={{
         borderTop: "1px solid #e5e7eb",
         color: "#6B7280",
