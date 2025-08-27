@@ -1,5 +1,6 @@
-// pages/about.js
+// pages/home.js
 import Head from "next/head";
+import { useEffect, useRef } from "react";
 import Footer from "../components/Footer";
 
 export default function About() {
