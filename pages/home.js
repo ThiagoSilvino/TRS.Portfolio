@@ -1,7 +1,7 @@
 // pages/home.js
 import Head from "next/head";
 import { useEffect, useRef } from "react";
-import footer from "../components/footer";
+import Footer from "../components/footer";
 
 export default function HomePage() {
   // Refs for parallax pieces
@@ -298,7 +298,7 @@ export default function HomePage() {
         </section>
 
         {/* ===================== FOOTER (shared) ===================== */}
-        <footer />
+        <Footer />
       </main>
     </>
   );
