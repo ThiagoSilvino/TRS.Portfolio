@@ -1,11 +1,11 @@
 // data/projects.js
 const projects = [
   {
-    slug: "courtyard-house",
-    title: "Courtyard House",
+    slug: "manitoba-curling",
+    title: "Manitoba Curling Centre",
     year: 2023,
-    category: "Residential",
-    location: "São Paulo, Brazil",
+    category: "Sports and Recreation",
+    location: "Winnipeg, Canada",
     hero: "/poster.jpg", // swap to /projects/courtyard-house/hero.jpg later
     summary:
       "A quiet inner-world organized around light, proportion, and a central void.",
