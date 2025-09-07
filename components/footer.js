@@ -40,9 +40,9 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* DOWNLOADS */}
+        {/* RESOURCES (was Downloads) */}
         <div>
-          <h4 style={heading}>DOWNLOADS</h4>
+          <h4 style={heading}>RESOURCES</h4>
           <ul style={list}>
             <li><a href="/resume.pdf" style={link}>Resume</a></li>
             <li><a href="/portfolio.pdf" style={link}>Portfolios</a></li>
