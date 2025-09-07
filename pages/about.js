@@ -15,6 +15,10 @@ export default function About() {
       </Head>
 
       <main style={{ background: "#F7F7F5", color: "#111" }}>
+        {/* Nav bar (brand always visible on non-home pages) */}
+        <NavBar />
+
+        {/* keep your existing header content */}
         <header style={{ maxWidth: 1280, margin: "0 auto", padding: "2rem 1.5rem" }}>
           <h1 style={{ margin: 0, fontWeight: 800, letterSpacing: ".01em" }}>About & Contact</h1>
           <p style={{ maxWidth: 720, color: "#374151" }}>
@@ -57,7 +61,8 @@ export default function About() {
           </article>
         </section>
 
-        <footer />
+        {/* Use the Footer component, not a raw <footer /> tag */}
+        <Footer />
       </main>
     </>
   );
