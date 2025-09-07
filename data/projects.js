@@ -6,11 +6,11 @@ const projects = [
     year: 2023,
     category: "Sports and Recreation",
     location: "Winnipeg, Canada",
-    hero: "/manitoba-hero.jpg", // swap to /projects/courtyard-house/hero.jpg later
+    hero: "/projects/manitoba-hero.jpg",
     summary:
       "A quiet inner-world organized around light, proportion, and a central void.",
     gallery: [
-      "/manitoba-hero.jpg", // placeholder; replace with real images when ready
+      "/projects/manitoba-hero.jpg", // placeholder; replace with real images when ready
     ],
     credits: ["Lead: Thiago Rocha Silvino", "Structural: ABC Engineering"],
     downloads: [
@@ -23,11 +23,11 @@ const projects = [
     year: 2022,
     category: "Public",
     location: "Lisbon, Portugal",
-    hero: "/Thiago_Silvino_SML_ABOUT.JPG", // placeholder
+    hero: "/projects/Thiago_Silvino_SML_ABOUT.JPG", // placeholder
     summary:
       "A light timber structure animating a civic courtyard.",
     gallery: [
-      "/Thiago_Silvino_SML_ABOUT.JPG",
+      "/projects/Thiago_Silvino_SML_ABOUT.JPG",
     ],
     credits: ["Lead: Thiago Rocha Silvino"],
     downloads: [],
