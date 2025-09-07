@@ -6,11 +6,11 @@ const projects = [
     year: 2023,
     category: "Sports and Recreation",
     location: "Winnipeg, Canada",
-    hero: "/poster.jpg", // swap to /projects/courtyard-house/hero.jpg later
+    hero: "/manitoba-hero.jpg", // swap to /projects/courtyard-house/hero.jpg later
     summary:
       "A quiet inner-world organized around light, proportion, and a central void.",
     gallery: [
-      "/poster.jpg", // placeholder; replace with real images when ready
+      "/manitoba-hero.jpg", // placeholder; replace with real images when ready
     ],
     credits: ["Lead: Thiago Rocha Silvino", "Structural: ABC Engineering"],
     downloads: [
