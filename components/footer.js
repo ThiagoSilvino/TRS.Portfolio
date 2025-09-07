@@ -1,5 +1,5 @@
 // components/footer.js
-export default function Footer() {
+export default function footer() {
   return (
     <footer
       style={{
