@@ -1,4 +1,9 @@
 // pages/process.js
+import Head from "next/head";
+import { useEffect, useRef } from "react";
+import NavBar from "../components/nav-bar.js";
+import Footer from "../components/footer.js";
+
 export default function ProcessPage() {
   return (
     <main style={{ maxWidth: 1280, margin: "0 auto", padding: "2rem 1.5rem" }}>
