@@ -1,6 +1,7 @@
 // pages/home.js
 import Head from "next/head";
 import { useEffect, useRef } from "react";
+import NavBar from "../components/nav-bar";
 import Footer from "../components/footer";
 
 export default function HomePage() {
@@ -62,61 +63,8 @@ export default function HomePage() {
       </Head>
 
       <main style={{ background: "#F7F7F5", color: "#111", minHeight: "100vh" }}>
-        {/* ===================== NAV (hamburger) ===================== */}
-        <header
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-            backdropFilter: "blur(8px)",
-            background: "rgba(247,247,245,.85)",
-            borderBottom: "1px solid #e5e7eb",
-          }}
-        >
-          <nav
-            style={{
-              maxWidth: 1280,
-              margin: "0 auto",
-              padding: ".8rem 1.5rem",
-              display: "grid",
-              gridTemplateColumns: "1fr auto 1fr",
-              alignItems: "center",
-            }}
-          >
-            <div style={{ fontSize: "1rem" }}>🔍</div>
-            <div
-              style={{
-                textAlign: "center",
-                letterSpacing: ".18em",
-                textTransform: "uppercase",
-                fontWeight: 700,
-              }}
-            >
-              SILVINO
-            </div>
-            <div style={{ justifySelf: "end" }}>
-              <button
-                aria-label="Open menu"
-                style={{
-                  appearance: "none",
-                  border: "1px solid #d1d5db",
-                  background: "#fff",
-                  color: "#111",
-                  width: 40,
-                  height: 40,
-                  borderRadius: 10,
-                  fontSize: 20,
-                  lineHeight: 1,
-                  display: "grid",
-                  placeItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                ☰
-              </button>
-            </div>
-          </nav>
-        </header>
+        {/* ===== Reusable Nav (brand reveals after scroll on home) ===== */}
+        <NavBar variant="home" />
 
         {/* small spacer so the hero isn’t glued to the nav */}
         <div style={{ height: "5vh" }} />
