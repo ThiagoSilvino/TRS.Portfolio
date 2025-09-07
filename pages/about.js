@@ -1,6 +1,6 @@
 // pages/about.js
 import Head from "next/head";
-import footer from "../components/footer.js";
+import Footer from "../components/footer.js";
 import NavBar from "../components/nav-bar.js";
 
 export default function About() {
