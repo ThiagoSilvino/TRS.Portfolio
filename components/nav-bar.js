@@ -1,47 +1,31 @@
 // components/nav-bar.js
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-/**
- * NavBar
- * - variant="home" → brand appears after scroll (hidden at top)
- * - default (no variant) → brand always visible
- */
-export default function NavBar({ variant }) {
-  const isHome = variant === "home";
-  const [showBrand, setShowBrand] = useState(!isHome); // hidden initially on home
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
+export default function NavBar() {
+  const [mode, setMode] = useState(null); // null | 'search' | 'menu'
+  const searchInputRef = useRef(null);
 
-  // Reveal brand on scroll (home only)
+  // Auto-focus search field when opened
   useEffect(() => {
-    if (!isHome) return;
-    const onScroll = () => {
-      const y = window.scrollY || 0;
-      setShowBrand(y > 60); // adjust threshold if needed
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isHome]);
-
-  // Lock body scroll when overlays are open
-  useEffect(() => {
-    const anyOpen = menuOpen || searchOpen;
-    const { body } = document;
-    if (!body) return;
-    if (anyOpen) {
-      const prev = body.style.overflow;
-      body.style.overflow = "hidden";
-      return () => {
-        body.style.overflow = prev || "";
-      };
+    if (mode === "search" && searchInputRef.current) {
+      // delay ensures mount complete
+      const t = setTimeout(() => searchInputRef.current?.focus(), 0);
+      return () => clearTimeout(t);
     }
-  }, [menuOpen, searchOpen]);
+  }, [mode]);
 
-  const closeAll = () => {
-    setMenuOpen(false);
-    setSearchOpen(false);
-  };
+  // ESC to close
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") setMode(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const openSearch = () => setMode("search");
+  const openMenu = () => setMode("menu");
+  const closeOverlay = () => setMode(null);
 
   return (
     <>
@@ -50,7 +34,7 @@ export default function NavBar({ variant }) {
         style={{
           position: "sticky",
           top: 0,
-          zIndex: 60,
+          zIndex: 50,
           backdropFilter: "blur(8px)",
           background: "rgba(247,247,245,.85)",
           borderBottom: "1px solid #e5e7eb",
@@ -66,149 +50,121 @@ export default function NavBar({ variant }) {
             alignItems: "center",
           }}
         >
-          {/* Left: search button */}
-          <div>
-            <button
-              aria-label="Open search"
-              onClick={() => {
-                setSearchOpen(true);
-                setMenuOpen(false);
-              }}
-              style={iconButton}
-            >
-              <img
-                src="/magnify-icon.png"
-                alt="Search"
-                style={iconImg}
-                draggable={false}
-              />
-            </button>
-          </div>
+          {/* Left: Search */}
+          <button
+            onClick={openSearch}
+            aria-label="Open search"
+            style={iconBtn}
+          >
+            <img
+              src="/magnify-icon.png"
+              alt=""
+              width={22}
+              height={22}
+              draggable={false}
+              style={{ display: "block" }}
+            />
+          </button>
 
-          {/* Center: brand */}
+          {/* Center: SILVINO */}
           <div
-            aria-hidden={!showBrand}
             style={{
               textAlign: "center",
               letterSpacing: ".18em",
               textTransform: "uppercase",
               fontWeight: 700,
-              opacity: showBrand ? 1 : 0,
-              transform: showBrand ? "translateY(0px)" : "translateY(-6px)",
-              transition: "opacity .25s ease, transform .25s ease",
-              pointerEvents: showBrand ? "auto" : "none",
             }}
           >
             SILVINO
           </div>
 
-          {/* Right: hamburger */}
+          {/* Right: Hamburger */}
           <div style={{ justifySelf: "end" }}>
             <button
+              onClick={openMenu}
               aria-label="Open menu"
-              onClick={() => {
-                setMenuOpen(true);
-                setSearchOpen(false);
-              }}
-              style={iconButton}
+              style={iconBtn}
             >
               <img
                 src="/ham-icon.png"
-                alt="Menu"
-                style={iconImg}
+                alt=""
+                width={22}
+                height={22}
                 draggable={false}
+                style={{ display: "block" }}
               />
             </button>
           </div>
         </nav>
       </header>
 
-      {/* ======== SEARCH OVERLAY ======== */}
-      {searchOpen && (
-        <div style={overlay} onClick={closeAll}>
-          <div
-            role="dialog"
-            aria-modal="true"
-            onClick={(e) => e.stopPropagation()}
-            style={searchPanel}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: ".6rem" }}>
+      {/* Shared full-screen overlay */}
+      {mode && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={closeOverlay}
+          style={overlayWrap}
+        >
+          {/* inner content area (clicks inside should not close) */}
+          <div onClick={(e) => e.stopPropagation()} style={overlayInner}>
+            {/* Close button (top-right) */}
+            <button
+              onClick={closeOverlay}
+              aria-label="Close overlay"
+              style={closeBtn}
+            >
               <img
-                src="/magnify-icon.png"
+                src="/esc-icon.png"
                 alt=""
-                aria-hidden="true"
-                style={{ width: 18, height: 18, display: "block" }}
+                width={18}
+                height={18}
                 draggable={false}
+                style={{ display: "block" }}
               />
-              <input
-                autoFocus
-                placeholder="Search…"
-                onKeyDown={(e) => {
-                  if (e.key === "Escape") closeAll();
-                }}
-                style={searchInput}
-              />
-              <button
-                aria-label="Close search"
-                onClick={closeAll}
-                style={ghostButton}
-              >
-                <img
-                  src="/esc-icon.png"
-                  alt=""
-                  aria-hidden="true"
-                  style={{ width: 18, height: 18, display: "block" }}
-                  draggable={false}
-                />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            </button>
 
-      {/* ======== MEGA MENU DRAWER (FULLSCREEN) ======== */}
-      {menuOpen && (
-        <div style={overlay} onClick={closeAll}>
-          <div
-            role="dialog"
-            aria-modal="true"
-            onClick={(e) => e.stopPropagation()}
-            style={menuPanel}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div style={{ letterSpacing: ".18em", textTransform: "uppercase", fontWeight: 700 }}>
-                Menu
+            {/* SEARCH MODE */}
+            {mode === "search" && (
+              <div style={searchBox}>
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Ask me anything…"
+                  aria-label="Search"
+                  style={searchInput}
+                />
+                <p style={hintText}>
+                  Hit <kbd style={kbd}>Enter</kbd> to submit · <kbd style={kbd}>Esc</kbd> to close
+                </p>
               </div>
-              <button aria-label="Close menu" onClick={closeAll} style={ghostButton}>
-                <img
-                  src="/esc-icon.png"
-                  alt=""
-                  aria-hidden="true"
-                  style={{ width: 18, height: 18, display: "block" }}
-                  draggable={false}
-                />
-              </button>
-            </div>
+            )}
 
-            <div style={{ display: "grid", gap: "1.25rem", marginTop: "1.25rem" }}>
-              {/* Primary navigation (big targets) */}
-              <a href="/home" style={menuLink}>Home</a>
-              <a href="/home#projects" style={menuLink}>Work</a>
-              <a href="/process" style={menuLink}>Process</a>
-              <a href="/about" style={menuLink}>About</a>
-            </div>
-
-            {/* Secondary: downloads/social */}
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "2rem", color: "#6B7280" }}>
-              <a href="/resume.pdf" style={miniLink}>Resume</a>
-              <a href="/portfolio.pdf" style={miniLink}>Portfolio</a>
-              <a href="/cv.pdf" style={miniLink}>CV</a>
-              <span style={{ opacity: .4 }}>·</span>
-              <a href="https://www.instagram.com" target="_blank" rel="noreferrer" style={miniLink}>Instagram</a>
-              <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" style={miniLink}>LinkedIn</a>
-              <a href="https://www.pinterest.com" target="_blank" rel="noreferrer" style={miniLink}>Pinterest</a>
-              <a href="https://vimeo.com" target="_blank" rel="noreferrer" style={miniLink}>Vimeo</a>
-            </div>
+            {/* MENU MODE */}
+            {mode === "menu" && (
+              <div style={menuWrap}>
+                <div style={menuCol}>
+                  <h3 style={colTitle}>Explore</h3>
+                  <a href="/home" style={menuLink}>Home</a>
+                  <a href="/projects/manitoba-curling" style={menuLink}>Work</a>
+                  <a href="/process" style={menuLink}>Process</a>
+                  <a href="/about" style={menuLink}>About</a>
+                </div>
+                <div style={menuCol}>
+                  <h3 style={colTitle}>Connect</h3>
+                  <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" style={menuLink}>LinkedIn</a>
+                  <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" style={menuLink}>Instagram</a>
+                  <a href="https://www.pinterest.com/" target="_blank" rel="noreferrer" style={menuLink}>Pinterest</a>
+                  <a href="https://vimeo.com/" target="_blank" rel="noreferrer" style={menuLink}>Vimeo</a>
+                </div>
+                <div style={menuCol}>
+                  <h3 style={colTitle}>Materials</h3>
+                  <a href="/resume.pdf" style={menuLink} download>Resume</a>
+                  <a href="/portfolio.pdf" style={menuLink} download>Portfolio</a>
+                  <a href="/resume.pdf" style={menuLink} download>CV</a>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -216,8 +172,8 @@ export default function NavBar({ variant }) {
   );
 }
 
-/* ===== styles ===== */
-const iconButton = {
+/* ---------- styles ---------- */
+const iconBtn = {
   appearance: "none",
   border: "1px solid #d1d5db",
   background: "#fff",
@@ -225,81 +181,104 @@ const iconButton = {
   width: 40,
   height: 40,
   borderRadius: 10,
-  fontSize: 18,
+  fontSize: 20,
   lineHeight: 1,
   display: "grid",
   placeItems: "center",
   cursor: "pointer",
 };
 
-const iconImg = {
-  width: 18,
-  height: 18,
-  display: "block",
-};
-
-const overlay = {
+const overlayWrap = {
   position: "fixed",
   inset: 0,
-  zIndex: 70,
-  background: "rgba(17, 17, 17, 0.5)",
+  zIndex: 80,
+  background: "rgba(10,10,10,.35)",
+  backdropFilter: "blur(14px)",
+  WebkitBackdropFilter: "blur(14px)",
   display: "grid",
   placeItems: "center",
-  padding: "1rem",
+  padding: "3.5vh 1.5rem",
 };
 
-const searchPanel = {
-  width: "min(720px, 96vw)",
-  background: "#fff",
+const overlayInner = {
+  position: "relative",
+  width: "min(1000px, 96vw)",
+  borderRadius: 16,
+  background: "rgba(255,255,255,.8)",
   border: "1px solid #e5e7eb",
-  borderRadius: 14,
-  padding: "0.9rem 1rem",
-  boxShadow: "0 10px 40px rgba(0,0,0,.12)",
+  boxShadow: "0 20px 80px rgba(0,0,0,.25)",
+  padding: "clamp(16px, 3.5vw, 28px)",
 };
 
-const searchInput = {
-  flex: 1,
-  border: "1px solid #e5e7eb",
-  borderRadius: 10,
-  padding: ".65rem .8rem",
-  outline: "none",
-  fontSize: "1rem",
-};
-
-const ghostButton = {
-  appearance: "none",
-  border: "1px solid #e5e7eb",
-  background: "#fff",
-  color: "#111",
+const closeBtn = {
+  position: "absolute",
+  top: 12,
+  right: 12,
   width: 36,
   height: 36,
   borderRadius: 10,
+  border: "1px solid #d1d5db",
+  background: "#fff",
+  cursor: "pointer",
   display: "grid",
   placeItems: "center",
-  cursor: "pointer",
 };
 
-const menuPanel = {
-  width: "min(900px, 94vw)",
-  background: "#fff",
-  border: "1px solid #e5e7eb",
-  borderRadius: 16,
-  padding: "1rem 1.1rem 1.25rem",
-  boxShadow: "0 10px 40px rgba(0,0,0,.14)",
+const searchBox = {
+  display: "grid",
+  gap: "0.75rem",
+  padding: "clamp(24px, 5vw, 40px) clamp(16px, 4vw, 36px)",
+};
+
+const searchInput = {
+  width: "100%",
+  fontSize: "clamp(20px, 5vw, 46px)",
+  lineHeight: 1.2,
+  fontWeight: 600,
+  border: "none",
+  outline: "none",
+  background: "transparent",
+  padding: "0 0 .25rem 0",
+  borderBottom: "2px solid #111",
+};
+
+const hintText = {
+  margin: 0,
+  color: "#6B7280",
+  fontSize: 14,
+};
+
+const kbd = {
+  background: "#111",
+  color: "#fff",
+  borderRadius: 6,
+  padding: "2px 6px",
+  fontSize: 12,
+};
+
+const menuWrap = {
+  display: "grid",
+  gap: "2.2rem",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  padding: "clamp(24px, 5vw, 40px) clamp(16px, 4vw, 36px)",
+};
+
+const menuCol = {
+  display: "grid",
+  gap: ".6rem",
+};
+
+const colTitle = {
+  margin: 0,
+  color: "#9CA3AF",
+  textTransform: "uppercase",
+  letterSpacing: ".14em",
+  fontSize: 12,
 };
 
 const menuLink = {
-  display: "block",
   textDecoration: "none",
   color: "#111",
-  fontWeight: 700,
-  fontSize: "clamp(1.6rem, 4.2vw, 2.4rem)",
-  letterSpacing: ".01em",
-  padding: ".2rem 0",
-};
-
-const miniLink = {
-  textDecoration: "none",
-  color: "#374151",
-  fontSize: ".95rem",
+  fontWeight: 600,
+  fontSize: "clamp(16px, 2.6vw, 20px)",
 };
