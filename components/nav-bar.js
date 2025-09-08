@@ -1,31 +1,76 @@
 // components/nav-bar.js
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function NavBar() {
-  const [mode, setMode] = useState(null); // null | 'search' | 'menu'
-  const searchInputRef = useRef(null);
+  const router = useRouter();
 
-  // Auto-focus search field when opened
+  // Overlay state: 'none' | 'search' | 'menu'
+  const [overlay, setOverlay] = useState("none");
+
+  // Controls center title visibility
+  const [showTitle, setShowTitle] = useState(true);
+
+  // For smooth scroll checks
+  const rafRef = useRef(null);
+
+  // --- Determine when to show the centered SILVINO title ---
   useEffect(() => {
-    if (mode === "search" && searchInputRef.current) {
-      // delay ensures mount complete
-      const t = setTimeout(() => searchInputRef.current?.focus(), 0);
-      return () => clearTimeout(t);
+    // On home page, hide the title until we scroll past the hero image
+    const onHome = router.pathname === "/home" || router.pathname === "/";
+    if (!onHome) {
+      setShowTitle(true);
+      return;
     }
-  }, [mode]);
 
-  // ESC to close
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") setMode(null);
+    // Home page: start hidden
+    setShowTitle(false);
+
+    const getHeroBottom = () => {
+      // Try to find the hero name image
+      const img = document.querySelector('img[src="/meganametext.png"]');
+      if (img) {
+        const rect = img.getBoundingClientRect();
+        const top = rect.top + window.scrollY;
+        const bottom = top + rect.height;
+        return bottom;
+      }
+      // Fallback: roughly one viewport tall
+      return window.innerHeight * 0.85;
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
 
-  const openSearch = () => setMode("search");
-  const openMenu = () => setMode("menu");
-  const closeOverlay = () => setMode(null);
+    const handle = () => {
+      const y = window.scrollY || 0;
+      const threshold = getHeroBottom() - 80; // bias so it appears a bit earlier
+      setShowTitle(y > threshold);
+    };
+
+    // rAF-ed scroll listener for smoother updates
+    const onScroll = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(handle);
+    };
+
+    handle(); // run once on mount
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [router.pathname]);
+
+  // --- Locks body scroll while overlay is open ---
+  useEffect(() => {
+    if (overlay !== "none") {
+      const { overflow } = document.body.style;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = overflow;
+      };
+    }
+  }, [overlay]);
 
   return (
     <>
@@ -48,12 +93,13 @@ export default function NavBar() {
             display: "grid",
             gridTemplateColumns: "1fr auto 1fr",
             alignItems: "center",
+            height: 60,
           }}
         >
-          {/* Left: Search */}
+          {/* Left: Search button */}
           <button
-            onClick={openSearch}
             aria-label="Open search"
+            onClick={() => setOverlay("search")}
             style={iconBtn}
           >
             <img
@@ -61,7 +107,6 @@ export default function NavBar() {
               alt=""
               width={22}
               height={22}
-              draggable={false}
               style={{ display: "block" }}
             />
           </button>
@@ -73,6 +118,9 @@ export default function NavBar() {
               letterSpacing: ".18em",
               textTransform: "uppercase",
               fontWeight: 700,
+              opacity: showTitle ? 1 : 0,
+              transition: "opacity .28s ease",
+              pointerEvents: showTitle ? "auto" : "none",
             }}
           >
             SILVINO
@@ -81,8 +129,8 @@ export default function NavBar() {
           {/* Right: Hamburger */}
           <div style={{ justifySelf: "end" }}>
             <button
-              onClick={openMenu}
               aria-label="Open menu"
+              onClick={() => setOverlay("menu")}
               style={iconBtn}
             >
               <img
@@ -90,7 +138,6 @@ export default function NavBar() {
                 alt=""
                 width={22}
                 height={22}
-                draggable={false}
                 style={{ display: "block" }}
               />
             </button>
@@ -98,72 +145,56 @@ export default function NavBar() {
         </nav>
       </header>
 
-      {/* Shared full-screen overlay */}
-      {mode && (
+      {/* ------------------- OVERLAYS ------------------- */}
+      {overlay !== "none" && (
         <div
           role="dialog"
           aria-modal="true"
-          onClick={closeOverlay}
-          style={overlayWrap}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 70,
+            backdropFilter: "blur(16px)",
+            background: "rgba(0,0,0,.35)",
+            display: "grid",
+            placeItems: "center",
+          }}
         >
-          {/* inner content area (clicks inside should not close) */}
-          <div onClick={(e) => e.stopPropagation()} style={overlayInner}>
-            {/* Close button (top-right) */}
-            <button
-              onClick={closeOverlay}
-              aria-label="Close overlay"
-              style={closeBtn}
-            >
-              <img
-                src="/esc-icon.png"
-                alt=""
-                width={18}
-                height={18}
-                draggable={false}
-                style={{ display: "block" }}
-              />
-            </button>
+          {/* Close button (top-right) */}
+          <button
+            aria-label="Close overlay"
+            onClick={() => setOverlay("none")}
+            style={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+              ...iconBtn,
+              border: "1px solid rgba(255,255,255,.35)",
+              background: "transparent",
+            }}
+          >
+            <img
+              src="/esc-icon.png"
+              alt=""
+              width={18}
+              height={18}
+              style={{ display: "block", filter: "invert(1)" }}
+            />
+          </button>
 
-            {/* SEARCH MODE */}
-            {mode === "search" && (
-              <div style={searchBox}>
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  placeholder="Ask me anything…"
-                  aria-label="Search"
-                  style={searchInput}
-                />
-                <p style={hintText}>
-                  Hit <kbd style={kbd}>Enter</kbd> to submit · <kbd style={kbd}>Esc</kbd> to close
-                </p>
-              </div>
-            )}
-
-            {/* MENU MODE */}
-            {mode === "menu" && (
-              <div style={menuWrap}>
-                <div style={menuCol}>
-                  <h3 style={colTitle}>Explore</h3>
-                  <a href="/home" style={menuLink}>Home</a>
-                  <a href="/projects/manitoba-curling" style={menuLink}>Work</a>
-                  <a href="/process" style={menuLink}>Process</a>
-                  <a href="/about" style={menuLink}>About</a>
-                </div>
-                <div style={menuCol}>
-                  <h3 style={colTitle}>Connect</h3>
-                  <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" style={menuLink}>LinkedIn</a>
-                  <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" style={menuLink}>Instagram</a>
-                  <a href="https://www.pinterest.com/" target="_blank" rel="noreferrer" style={menuLink}>Pinterest</a>
-                  <a href="https://vimeo.com/" target="_blank" rel="noreferrer" style={menuLink}>Vimeo</a>
-                </div>
-                <div style={menuCol}>
-                  <h3 style={colTitle}>Materials</h3>
-                  <a href="/resume.pdf" style={menuLink} download>Resume</a>
-                  <a href="/portfolio.pdf" style={menuLink} download>Portfolio</a>
-                  <a href="/resume.pdf" style={menuLink} download>CV</a>
-                </div>
-              </div>
+          {/* Content (transparent; text in white) */}
+          <div
+            style={{
+              width: "min(1100px, 92vw)",
+              margin: "0 auto",
+              padding: "min(3vw, 24px)",
+              color: "#fff",
+            }}
+          >
+            {overlay === "search" ? (
+              <SearchPane onClose={() => setOverlay("none")} />
+            ) : (
+              <MenuPane onClose={() => setOverlay("none")} />
             )}
           </div>
         </div>
@@ -172,7 +203,156 @@ export default function NavBar() {
   );
 }
 
-/* ---------- styles ---------- */
+/* ---------- Sub-components ---------- */
+
+function SearchPane({ onClose }) {
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    // focus input when opened
+    const t = setTimeout(() => inputRef.current?.focus(), 0);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div style={{ textAlign: "center", display: "grid", gap: "1.2rem" }}>
+      <label
+        htmlFor="site-search"
+        style={{
+          fontSize: "clamp(1rem, 1.8vw, 1.2rem)",
+          letterSpacing: ".12em",
+          textTransform: "uppercase",
+          opacity: 0.85,
+        }}
+      >
+        Search
+      </label>
+      <input
+        id="site-search"
+        ref={inputRef}
+        placeholder="Ask me anything…"
+        style={{
+          width: "min(900px, 90vw)",
+          margin: "0 auto",
+          padding: "1.1rem 1.2rem",
+          fontSize: "clamp(1.4rem, 4.2vw, 2.8rem)",
+          lineHeight: 1.2,
+          color: "#fff",
+          background: "transparent",
+          border: "0",
+          borderBottom: "2px solid rgba(255,255,255,.6)",
+          outline: "none",
+          textAlign: "center",
+        }}
+      />
+      <p style={{ margin: 0, opacity: 0.8 }}>
+        Try “courtyard”, “pavilion”, or “Winnipeg”
+      </p>
+    </div>
+  );
+}
+
+function MenuPane({ onClose }) {
+  const linkStyle = {
+    color: "#fff",
+    textDecoration: "none",
+    fontSize: "clamp(1.1rem, 2vw, 1.25rem)",
+    fontWeight: 600,
+    letterSpacing: ".02em",
+  };
+
+  return (
+    <div
+      style={{
+        display: "grid",
+        gap: "2.25rem",
+      }}
+    >
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, minmax(0,1fr))",
+          gap: "1.5rem",
+        }}
+      >
+        <Section title="Pages">
+          <a href="/home" style={linkStyle} onClick={onClose}>
+            Home
+          </a>
+          <a href="/#projects" style={linkStyle} onClick={onClose}>
+            Work
+          </a>
+          <a href="/process" style={linkStyle} onClick={onClose}>
+            Process
+          </a>
+          <a href="/about" style={linkStyle} onClick={onClose}>
+            About
+          </a>
+        </Section>
+
+        <Section title="Connect">
+          <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" style={linkStyle}>
+            LinkedIn
+          </a>
+          <a href="https://www.instagram.com" target="_blank" rel="noreferrer" style={linkStyle}>
+            Instagram
+          </a>
+          <a href="https://www.pinterest.com" target="_blank" rel="noreferrer" style={linkStyle}>
+            Pinterest
+          </a>
+          <a href="https://vimeo.com" target="_blank" rel="noreferrer" style={linkStyle}>
+            Vimeo
+          </a>
+        </Section>
+
+        <Section title="Downloads">
+          <a href="/resume.pdf" style={linkStyle} onClick={onClose}>
+            Résumé (PDF)
+          </a>
+          <a href="/portfolio.pdf" style={linkStyle} onClick={onClose}>
+            Portfolio (PDF)
+          </a>
+          <a href="/resume.pdf" style={{ ...linkStyle, opacity: 0.8 }} onClick={onClose}>
+            CV (PDF)
+          </a>
+        </Section>
+
+        <div
+          style={{
+            display: "grid",
+            alignContent: "space-between",
+            justifyItems: "end",
+            textAlign: "right",
+          }}
+        >
+          <div style={{ letterSpacing: ".12em", textTransform: "uppercase", opacity: 0.85 }}>
+            ©2025 Silvino
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Section({ title, children }) {
+  return (
+    <div style={{ display: "grid", gap: ".75rem" }}>
+      <div
+        style={{
+          textTransform: "uppercase",
+          letterSpacing: ".14em",
+          opacity: 0.7,
+          fontSize: ".95rem",
+        }}
+      >
+        {title}
+      </div>
+      <div style={{ display: "grid", gap: ".5rem" }}>{children}</div>
+    </div>
+  );
+}
+
+/* ---------- shared small styles ---------- */
 const iconBtn = {
   appearance: "none",
   border: "1px solid #d1d5db",
@@ -181,104 +361,7 @@ const iconBtn = {
   width: 40,
   height: 40,
   borderRadius: 10,
-  fontSize: 20,
-  lineHeight: 1,
   display: "grid",
   placeItems: "center",
   cursor: "pointer",
-};
-
-const overlayWrap = {
-  position: "fixed",
-  inset: 0,
-  zIndex: 80,
-  background: "rgba(10,10,10,.35)",
-  backdropFilter: "blur(14px)",
-  WebkitBackdropFilter: "blur(14px)",
-  display: "grid",
-  placeItems: "center",
-  padding: "3.5vh 1.5rem",
-};
-
-const overlayInner = {
-  position: "relative",
-  width: "min(1000px, 96vw)",
-  borderRadius: 16,
-  background: "rgba(255,255,255,.8)",
-  border: "1px solid #e5e7eb",
-  boxShadow: "0 20px 80px rgba(0,0,0,.25)",
-  padding: "clamp(16px, 3.5vw, 28px)",
-};
-
-const closeBtn = {
-  position: "absolute",
-  top: 12,
-  right: 12,
-  width: 36,
-  height: 36,
-  borderRadius: 10,
-  border: "1px solid #d1d5db",
-  background: "#fff",
-  cursor: "pointer",
-  display: "grid",
-  placeItems: "center",
-};
-
-const searchBox = {
-  display: "grid",
-  gap: "0.75rem",
-  padding: "clamp(24px, 5vw, 40px) clamp(16px, 4vw, 36px)",
-};
-
-const searchInput = {
-  width: "100%",
-  fontSize: "clamp(20px, 5vw, 46px)",
-  lineHeight: 1.2,
-  fontWeight: 600,
-  border: "none",
-  outline: "none",
-  background: "transparent",
-  padding: "0 0 .25rem 0",
-  borderBottom: "2px solid #111",
-};
-
-const hintText = {
-  margin: 0,
-  color: "#6B7280",
-  fontSize: 14,
-};
-
-const kbd = {
-  background: "#111",
-  color: "#fff",
-  borderRadius: 6,
-  padding: "2px 6px",
-  fontSize: 12,
-};
-
-const menuWrap = {
-  display: "grid",
-  gap: "2.2rem",
-  gridTemplateColumns: "repeat(3, 1fr)",
-  padding: "clamp(24px, 5vw, 40px) clamp(16px, 4vw, 36px)",
-};
-
-const menuCol = {
-  display: "grid",
-  gap: ".6rem",
-};
-
-const colTitle = {
-  margin: 0,
-  color: "#9CA3AF",
-  textTransform: "uppercase",
-  letterSpacing: ".14em",
-  fontSize: 12,
-};
-
-const menuLink = {
-  textDecoration: "none",
-  color: "#111",
-  fontWeight: 600,
-  fontSize: "clamp(16px, 2.6vw, 20px)",
 };
