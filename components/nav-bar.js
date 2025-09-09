@@ -294,7 +294,7 @@ function MenuPane({ onClose }) {
           <a href="http://linkedin.com/in/thiago-silvino-6250b818" target="_blank" rel="noreferrer" style={linkStyle}>
             LinkedIn
           </a>
-          <a href="https://www.instagram.com" target="_blank" rel="noreferrer" style={linkStyle}>
+          <a href="http://linkedin.com/in/thiago-silvino-6250b818" target="_blank" rel="noreferrer" style={linkStyle}>
             Instagram
           </a>
           <a href="https://www.pinterest.com" target="_blank" rel="noreferrer" style={linkStyle}>
