@@ -306,13 +306,13 @@ function MenuPane({ onClose }) {
         </Section>
 
         <Section title="Downloads">
-          <a href="/resume" style={linkStyle} onClick={onClose}>
+          <a href="/resume.pdf" style={linkStyle} onClick={onClose}>
             Résumé (PDF)
           </a>
-          <a href="/portfolio" style={linkStyle} onClick={onClose}>
+          <a href="/portfolio.pdf" style={linkStyle} onClick={onClose}>
             Portfolio (PDF)
           </a>
-          <a href="/resume" style={{ ...linkStyle, opacity: 0.8 }} onClick={onClose}>
+          <a href="/resume.pdf" style={{ ...linkStyle, opacity: 0.8 }} onClick={onClose}>
             CV (PDF)
           </a>
         </Section>
