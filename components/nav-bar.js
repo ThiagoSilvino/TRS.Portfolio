@@ -294,13 +294,13 @@ function MenuPane({ onClose }) {
           <a href="http://linkedin.com/in/thiago-silvino-6250b818" target="_blank" rel="noreferrer" style={linkStyle}>
             LinkedIn
           </a>
-          <a href="http://linkedin.com/in/thiago-silvino-6250b818" target="_blank" rel="noreferrer" style={linkStyle}>
+          <a href="https://www.instagram.com/theo_sil?igsh=MWpoNnhiaWlnYTlneg%3D%3D&utm_source=qr" target="_blank" rel="noreferrer" style={linkStyle}>
             Instagram
           </a>
-          <a href="https://www.pinterest.com" target="_blank" rel="noreferrer" style={linkStyle}>
+          <a href="https://pin.it/1hs6mKM1i" target="_blank" rel="noreferrer" style={linkStyle}>
             Pinterest
           </a>
-          <a href="https://vimeo.com" target="_blank" rel="noreferrer" style={linkStyle}>
+          <a href="https://vimeo.com/user246696244" target="_blank" rel="noreferrer" style={linkStyle}>
             Vimeo
           </a>
         </Section>
