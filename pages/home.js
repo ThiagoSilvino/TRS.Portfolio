@@ -1,15 +1,11 @@
 // pages/home.js
 import Head from "next/head";
 import { useEffect, useRef } from "react";
-import NavBar from "../components/nav-bar.js";
-import Footer from "../components/footer.js";
+import Footer from "../components/footer";
 
 export default function HomePage() {
-  // Refs for parallax pieces
-  const bgRef = useRef(null);
-  const fgRef = useRef(null);
+  // Only keep the parallax stripe motion (unchanged)
   const bandRef = useRef(null);
-
   const reduceMotion =
     typeof window !== "undefined" &&
     window.matchMedia &&
@@ -17,26 +13,14 @@ export default function HomePage() {
 
   useEffect(() => {
     if (reduceMotion) return;
-
     let rafId;
-    const speedBg = 0.15;   // background image (behind)
-    const speedFg = 0.35;   // foreground image (in front)
-    const speedBand = 0.22; // parallax stripe
+    const speedBand = 0.22;
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
     const onScroll = () => {
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
         const y = window.scrollY || 0;
-
-        if (bgRef.current) {
-          const t = clamp(y * speedBg, -160, 220);
-          bgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
-        }
-        if (fgRef.current) {
-          const t = clamp(y * speedFg - 60, -60, 360);
-          fgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
-        }
         if (bandRef.current) {
           const t = clamp(y * speedBand, -200, 400);
           bandRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
@@ -63,102 +47,89 @@ export default function HomePage() {
       </Head>
 
       <main style={{ background: "#F7F7F5", color: "#111", minHeight: "100vh" }}>
-        {/* ===== Reusable Nav (brand reveals after scroll on home) ===== */}
-        <NavBar variant="home" />
-
-        {/* small spacer so the hero isn’t glued to the nav */}
-        <div style={{ height: "5vh" }} />
-
-        {/* ===================== HERO NAME IMAGE ===================== */}
+        {/* ======= LAYERED, BOTTOM-PINNED HERO STACK (BG • NAME • FG) ======= */}
         <section
-          style={{
-            position: "relative",
-            maxWidth: 1280,
-            margin: "0 auto",
-            padding: "0 1.5rem",
-          }}
+          aria-label="Layered hero"
+          // Tall enough to allow a 'pinned' moment before releasing
+          style={{ position: "relative", height: "140vh", marginBottom: "2rem" }}
         >
-          <img
-            src="/meganametext.png"
-            alt="Thiago Rocha Silvino"
-            draggable={false}
-            style={{
-              display: "block",
-              margin: "0 auto",
-              width: "min(1800px, 96%)",
-              height: "auto",
-              imageRendering: "auto",
-              userSelect: "none",
-            }}
-          />
-        </section>
-
-        {/* Divider / break */}
-        <div aria-hidden="true" style={{ maxWidth: 1280, margin: "1.25rem auto 1.75rem", padding: "0 1.5rem" }}>
+          {/* Sticky viewport frame */}
           <div
             style={{
-              height: 8,
-              background: "#E7E7E7",
-              borderRadius: 999,
-              boxShadow: "inset 0 -1px 0 #e3e3e3, inset 0 1px 0 #efefef",
+              position: "sticky",
+              top: 0,
+              height: "100vh",
+              maxWidth: 1280,
+              margin: "0 auto",
+              borderRadius: 12,
+              overflow: "hidden",
+              // Optional soft background to match your current card look
+              background: "#EEE",
             }}
-          />
-        </div>
+          >
+            {/* BACKGROUND (furthest back) */}
+            <img
+              src="/projects/featuredbackground.png"
+              alt=""
+              draggable={false}
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,              // bottom pin
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center bottom",
+                zIndex: 1,
+                filter: "grayscale(20%)",
+                userSelect: "none",
+                pointerEvents: "none",
+              }}
+            />
 
-        {/* ===================== LAYERED PARALLAX FEATURE ===================== */}
-        <section
-          id="projects"
-          style={{
-            position: "relative",
-            maxWidth: 1280,
-            margin: "0 auto 4rem",
-            padding: "0 1.5rem",
-            height: "clamp(260px, 55vw, 520px)",
-            zIndex: 1,
-            background: "#EEE",
-            borderRadius: 12,
-            overflow: "hidden",
-          }}
-          aria-label="Featured architecture image with layered parallax"
-        >
-          <img
-            ref={bgRef}
-            src="/featuredbackground.png"
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 12,
-              zIndex: 1,
-              filter: "grayscale(20%)",
-              willChange: "transform",
-            }}
-          />
-          <img
-            ref={fgRef}
-            src="/featuredforeground.png"
-            alt="Featured project foreground"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 12,
-              zIndex: 3,
-              willChange: "transform",
-              pointerEvents: "none",
-            }}
-          />
+            {/* MEGA NAME (middle) */}
+            <img
+              src="/meganametext.png"
+              alt="Thiago Rocha Silvino"
+              draggable={false}
+              style={{
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
+                // Vertically place it as you have it now; it stays fixed while pinned
+                top: "8vh",
+                width: "min(1800px, 96%)",
+                height: "auto",
+                zIndex: 2,
+                userSelect: "none",
+                pointerEvents: "none",
+              }}
+            />
+
+            {/* FOREGROUND (front) */}
+            <img
+              src="/projects/featuredforeground.png"
+              alt="Featured project foreground"
+              draggable={false}
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,              // bottom pin
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: "center bottom",
+                zIndex: 3,
+                userSelect: "none",
+                pointerEvents: "none",
+              }}
+            />
+          </div>
         </section>
 
-        {/* ===================== PARALLAX STRIPE SECTION ===================== */}
+        {/* ===================== PARALLAX STRIPE SECTION (unchanged) ===================== */}
         <section
           style={{
             position: "relative",
@@ -216,7 +187,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===================== OTHER PROJECTS ===================== */}
+        {/* ===================== OTHER PROJECTS (unchanged) ===================== */}
         <section
           aria-label="Other projects"
           style={{ maxWidth: 1280, margin: "0 auto 4rem", padding: "0 1.5rem" }}
@@ -252,7 +223,7 @@ export default function HomePage() {
   );
 }
 
-/* ---------- tiny style helpers ---------- */
+/* ---------- tiny style helpers (unchanged) ---------- */
 const card = {
   display: "grid",
   gridTemplateColumns: "220px 1fr",
