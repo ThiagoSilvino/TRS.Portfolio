@@ -5,53 +5,42 @@ import { useRouter } from "next/router";
 export default function NavBar() {
   const router = useRouter();
 
-  // Overlay state: 'none' | 'search' | 'menu'
-  const [overlay, setOverlay] = useState("none");
-
-  // Controls center title visibility
+  const [overlay, setOverlay] = useState("none"); // 'none' | 'search' | 'menu'
   const [showTitle, setShowTitle] = useState(true);
-
-  // For smooth scroll checks
   const rafRef = useRef(null);
 
-  // --- Determine when to show the centered SILVINO title ---
+  // --- Show SILVINO after scrolling past hero (home only) ---
   useEffect(() => {
-    // On home page, hide the title until we scroll past the hero image
     const onHome = router.pathname === "/home" || router.pathname === "/";
     if (!onHome) {
       setShowTitle(true);
       return;
     }
 
-    // Home page: start hidden
     setShowTitle(false);
 
     const getHeroBottom = () => {
-      // Try to find the hero name image
       const img = document.querySelector('img[src="/meganametext.png"]');
       if (img) {
         const rect = img.getBoundingClientRect();
         const top = rect.top + window.scrollY;
-        const bottom = top + rect.height;
-        return bottom;
+        return top + rect.height;
       }
-      // Fallback: roughly one viewport tall
       return window.innerHeight * 0.85;
     };
 
     const handle = () => {
       const y = window.scrollY || 0;
-      const threshold = getHeroBottom() - 80; // bias so it appears a bit earlier
+      const threshold = getHeroBottom() - 80;
       setShowTitle(y > threshold);
     };
 
-    // rAF-ed scroll listener for smoother updates
     const onScroll = () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(handle);
     };
 
-    handle(); // run once on mount
+    handle();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
@@ -61,7 +50,7 @@ export default function NavBar() {
     };
   }, [router.pathname]);
 
-  // --- Locks body scroll while overlay is open ---
+  // Lock body scroll while overlay open
   useEffect(() => {
     if (overlay !== "none") {
       const { overflow } = document.body.style;
@@ -158,6 +147,7 @@ export default function NavBar() {
             background: "rgba(0,0,0,.35)",
             display: "grid",
             placeItems: "center",
+            padding: "2rem",
           }}
         >
           {/* Close button (top-right) */}
@@ -187,15 +177,27 @@ export default function NavBar() {
             style={{
               width: "min(1100px, 92vw)",
               margin: "0 auto",
-              padding: "min(3vw, 24px)",
               color: "#fff",
+              display: "grid",
+              gap: "3rem",
+              justifyItems: "center",
             }}
           >
             {overlay === "search" ? (
-              <SearchPane onClose={() => setOverlay("none")} />
+              <SearchPane />
             ) : (
-              <MenuPane onClose={() => setOverlay("none")} />
+              <MenuPane />
             )}
+            <div
+              style={{
+                fontSize: 14,
+                letterSpacing: ".12em",
+                textTransform: "uppercase",
+                opacity: 0.8,
+              }}
+            >
+              ©2025 Silvino
+            </div>
           </div>
         </div>
       )}
@@ -205,37 +207,24 @@ export default function NavBar() {
 
 /* ---------- Sub-components ---------- */
 
-function SearchPane({ onClose }) {
+function SearchPane() {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    // focus input when opened
     const t = setTimeout(() => inputRef.current?.focus(), 0);
     return () => clearTimeout(t);
   }, []);
 
   return (
     <div style={{ textAlign: "center", display: "grid", gap: "1.2rem" }}>
-      <label
-        htmlFor="site-search"
-        style={{
-          fontSize: "clamp(1rem, 1.8vw, 1.2rem)",
-          letterSpacing: ".12em",
-          textTransform: "uppercase",
-          opacity: 0.85,
-        }}
-      >
-        Search
-      </label>
       <input
-        id="site-search"
         ref={inputRef}
         placeholder="Ask me anything…"
         style={{
           width: "min(900px, 90vw)",
           margin: "0 auto",
-          padding: "1.1rem 1.2rem",
-          fontSize: "clamp(1.4rem, 4.2vw, 2.8rem)",
+          padding: "1rem",
+          fontSize: "clamp(1.6rem, 4vw, 2.8rem)",
           lineHeight: 1.2,
           color: "#fff",
           background: "transparent",
@@ -245,14 +234,11 @@ function SearchPane({ onClose }) {
           textAlign: "center",
         }}
       />
-      <p style={{ margin: 0, opacity: 0.8 }}>
-        Try “courtyard”, “pavilion”, or “Winnipeg”
-      </p>
     </div>
   );
 }
 
-function MenuPane({ onClose }) {
+function MenuPane() {
   const linkStyle = {
     color: "#fff",
     textDecoration: "none",
@@ -265,70 +251,59 @@ function MenuPane({ onClose }) {
     <div
       style={{
         display: "grid",
-        gap: "2.25rem",
+        gap: "2rem",
+        justifyItems: "center",
       }}
     >
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, minmax(0,1fr))",
-          gap: "1.5rem",
+          gap: "2rem",
+          gridTemplateColumns: "repeat(3, minmax(0,1fr))",
+          textAlign: "center",
         }}
       >
-        <Section title="Pages">
-          <a href="/home" style={linkStyle} onClick={onClose}>
+        <Section title="Explore">
+          <a href="/home" style={linkStyle}>
             Home
           </a>
-          <a href="/#projects" style={linkStyle} onClick={onClose}>
+          <a href="/#projects" style={linkStyle}>
             Work
           </a>
-          <a href="/process" style={linkStyle} onClick={onClose}>
+          <a href="/process" style={linkStyle}>
             Process
           </a>
-          <a href="/about" style={linkStyle} onClick={onClose}>
+          <a href="/about" style={linkStyle}>
             About
           </a>
         </Section>
 
         <Section title="Connect">
-          <a href="http://linkedin.com/in/thiago-silvino-6250b818" target="_blank" rel="noreferrer" style={linkStyle}>
+          <a href="https://www.linkedin.com" target="_blank" rel="noreferrer" style={linkStyle}>
             LinkedIn
           </a>
-          <a href="https://www.instagram.com/theo_sil?igsh=MWpoNnhiaWlnYTlneg%3D%3D&utm_source=qr" target="_blank" rel="noreferrer" style={linkStyle}>
+          <a href="https://www.instagram.com" target="_blank" rel="noreferrer" style={linkStyle}>
             Instagram
           </a>
-          <a href="https://pin.it/1hs6mKM1i" target="_blank" rel="noreferrer" style={linkStyle}>
+          <a href="https://www.pinterest.com" target="_blank" rel="noreferrer" style={linkStyle}>
             Pinterest
           </a>
-          <a href="https://vimeo.com/user246696244" target="_blank" rel="noreferrer" style={linkStyle}>
+          <a href="https://vimeo.com" target="_blank" rel="noreferrer" style={linkStyle}>
             Vimeo
           </a>
         </Section>
 
-        <Section title="Downloads">
-          <a href="/resume.pdf" style={linkStyle} onClick={onClose}>
-            Résumé (PDF)
+        <Section title="Materials">
+          <a href="/resume.pdf" style={linkStyle}>
+            Résumé
           </a>
-          <a href="/portfolio.pdf" style={linkStyle} onClick={onClose}>
-            Portfolio (PDF)
+          <a href="/portfolio.pdf" style={linkStyle}>
+            Portfolio
           </a>
-          <a href="/resume.pdf" style={{ ...linkStyle, opacity: 0.8 }} onClick={onClose}>
-            CV (PDF)
+          <a href="/resume.pdf" style={{ ...linkStyle, opacity: 0.8 }}>
+            CV
           </a>
         </Section>
-
-        <div
-          style={{
-            display: "grid",
-            alignContent: "space-between",
-            justifyItems: "end",
-            textAlign: "right",
-          }}
-        >
-          <div style={{ letterSpacing: ".12em", textTransform: "uppercase", opacity: 0.85 }}>
-            ©2025 Silvino
-          </div>
-        </div>
       </div>
     </div>
   );
