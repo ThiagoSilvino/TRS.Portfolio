@@ -175,7 +175,7 @@ export default function HomePage() {
               left: 0,
               right: 0,
               top: "-20vh",
-              height: "40vh",
+              height: "120vh",
               background:
                 "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.06) 100%), url('/rainbowtess.png') center/cover no-repeat",
               opacity: 0.25,
