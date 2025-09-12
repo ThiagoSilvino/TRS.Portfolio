@@ -198,7 +198,7 @@ export default function HomePage() {
             }}
           >
             <small style={{ letterSpacing: ".12em", textTransform: "uppercase", color: "#6B7280" }}>
-              Studio Notes
+              Welcome
             </small>
             <h2
               style={{
@@ -208,10 +208,10 @@ export default function HomePage() {
                 fontWeight: 700,
               }}
             >
-              Clarity, proportion, and craft.
+              Hello
             </h2>
             <p style={{ margin: 0, color: "#374151", maxWidth: 820, marginInline: "auto" }}>
-              A calm, minimal surface—built for browsing selected work quickly and elegantly.
+              Context, Calm and Clarity
             </p>
           </div>
         </section>
