@@ -112,7 +112,7 @@ export default function NavBar() {
               pointerEvents: showTitle ? "auto" : "none",
             }}
           >
-            FOUNDRY
+            THE FOUNDRY COLLECTIVE
           </div>
 
           {/* Right: Hamburger */}
