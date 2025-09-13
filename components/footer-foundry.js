@@ -59,7 +59,7 @@ export default function Footer() {
       {/* Bottom logo bar */}
       <div style={{ marginTop: "2rem", borderTop: "1px solid #e5e7eb", paddingTop: "1.5rem" }}>
         <img
-          src="/meganametext.png"
+          src="/Foundrybau-solid.png"
           alt="Thiago Rocha Silvino"
           style={{
             display: "block",
