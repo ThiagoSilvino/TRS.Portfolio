@@ -1,7 +1,7 @@
 // pages/homefoundry.js
 import Head from "next/head";
-import NavBar from "../components/nav-bar.js";
-import Footer from "../components/footer.js";
+import NavBarFoundry from "../components/nav-bar-foundry.js";
+import FooterFoundry from "../components/footer-foundry.js";
 
 export default function HomeFoundry() {
   return (
@@ -14,47 +14,38 @@ export default function HomeFoundry() {
         />
       </Head>
 
-      {/* Keep text readable over the global background */}
-      <main style={{ color: "#fff", minHeight: "100vh" }}>
-        <NavBar showCenterTitle={true} />
+      <main style={{ minHeight: "100vh", background: "#F7F7F5", color: "#111" }}>
+        {/* Foundry-specific nav */}
+        <NavBarFoundry />
 
-        {/* Full-height hero text over the persistent background */}
+        {/* ===== Hero image at the top (no parallax, no persistent background) ===== */}
         <section
           style={{
-            minHeight: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-            padding: "0 1rem",
+            position: "relative",
+            maxWidth: 1280,
+            margin: "0 auto",
+            padding: "2rem 1.5rem 0",
           }}
         >
-          <div>
-            <h1
-              style={{
-                fontFamily: "Space Grotesk, Inter, system-ui",
-                fontSize: "clamp(2.8rem, 6vw, 5rem)",
-                fontWeight: 700,
-                margin: 0,
-              }}
-            >
-              Foundry Collective
-            </h1>
-            <p
-              style={{
-                marginTop: "1rem",
-                fontSize: "clamp(1rem, 2vw, 1.25rem)",
-                maxWidth: "40rem",
-                marginInline: "auto",
-                opacity: 0.95,
-              }}
-            >
-              Concept, Craft, Clarity.
-            </p>
-          </div>
+          <img
+            src="/foundrybau.png"     // ensure this file is in /public (exact case)
+            alt="Foundry Collective hero"
+            draggable={false}
+            style={{
+              display: "block",
+              width: "min(1800px, 100%)",
+              height: "auto",
+              borderRadius: 12,
+              background: "#eaeaea",
+            }}
+          />
         </section>
 
-        <Footer />
+        {/* (Optional) small spacer below the hero */}
+        <div style={{ height: "4rem" }} />
+
+        {/* Foundry-specific footer */}
+        <FooterFoundry />
       </main>
     </>
   );
