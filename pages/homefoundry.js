@@ -21,7 +21,6 @@ export default function HomeFoundry() {
       rafId = requestAnimationFrame(() => {
         const y = window.scrollY || 0;
         if (bandRef.current) {
-          // subtle translate for depth
           bandRef.current.style.transform = `translate3d(0, ${y * 0.18}px, 0)`;
         }
       });
@@ -45,67 +44,65 @@ export default function HomeFoundry() {
         />
       </Head>
 
-      <main style={{ background: "#F7F7F5", color: "#111", minHeight: "100vh" }}>
+      <main style={{ background: "#111", color: "#fff", minHeight: "100vh" }}>
         {/* Global nav (shared) */}
         <NavBar showCenterTitle={true} />
 
-        {/* ===== Hero (foundrybau.png) ===== */}
+        {/* ===== Fullscreen Background Hero ===== */}
         <section
           style={{
             position: "relative",
-            maxWidth: 1440,
-            margin: "0 auto",
-            padding: "clamp(16px, 3vw, 24px)",
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
           }}
         >
+          {/* background image */}
+          <img
+            src="/foundrybau.png"
+            alt="Foundry Collective hero background"
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              zIndex: -1,
+            }}
+            draggable={false}
+          />
+
+          {/* overlay text */}
           <div
             style={{
-              position: "relative",
-              borderRadius: 14,
-              overflow: "hidden",
-              border: "1px solid #e5e7eb",
-              boxShadow: "0 8px 32px rgba(0,0,0,.06)",
-              background: "#ddd",
-              height: "clamp(360px, 60vw, 680px)",
+              textAlign: "center",
+              padding: "0 1rem",
             }}
-            aria-label="Foundry Collective hero"
           >
-            <img
-              src="/foundrybau.png"
-              alt="Foundry Collective — Bauhaus-inspired hero"
+            <h1
               style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "center",
-                display: "block",
+                fontFamily: "Space Grotesk, Inter, system-ui",
+                fontSize: "clamp(2.5rem, 6vw, 5rem)",
+                fontWeight: 700,
+                margin: 0,
               }}
-              draggable={false}
-            />
+            >
+              Foundry Collective
+            </h1>
+            <p
+              style={{
+                marginTop: "1rem",
+                fontSize: "clamp(1rem, 2vw, 1.25rem)",
+                maxWidth: "40rem",
+                marginInline: "auto",
+              }}
+            >
+              Concept, Craft, Clarity.
+            </p>
           </div>
         </section>
-
-        {/* Divider */}
-        <div
-          aria-hidden="true"
-          style={{
-            maxWidth: 1440,
-            margin: "0 auto",
-            padding: "0 clamp(16px, 3vw, 24px)",
-          }}
-        >
-          <div
-            style={{
-              height: 8,
-              borderRadius: 999,
-              background: "#E7E7E7",
-              boxShadow: "inset 0 -1px 0 #e3e3e3, inset 0 1px 0 #efefef",
-              margin: "clamp(16px, 3vw, 24px) 0 clamp(20px, 3.5vw, 32px)",
-            }}
-          />
-        </div>
 
         {/* ===== Single Parallax Section ===== */}
         <section
@@ -114,6 +111,8 @@ export default function HomeFoundry() {
             overflow: "hidden",
             padding: "6rem 0 5rem",
             marginBottom: "3rem",
+            background: "#F7F7F5",
+            color: "#111",
           }}
         >
           {/* moving band */}
@@ -166,7 +165,7 @@ export default function HomeFoundry() {
                 fontWeight: 700,
               }}
             >
-              Concept, Craft, Clarity.
+              Building ideas with precision & poetry
             </h2>
             <p style={{ margin: 0, color: "#374151", maxWidth: 820, marginInline: "auto" }}>
               A focused studio exploring systems, materials, and human scale—bridging poetic
