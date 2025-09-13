@@ -52,7 +52,7 @@ export default function Footer() {
 
         {/* COPYRIGHT */}
         <div style={{ alignSelf: "end", textAlign: "right", fontSize: ".9rem", color: "#555" }}>
-          @2025 SILVINO
+          @2025 FOUNDRY COLLECTIVE
         </div>
       </div>
 
