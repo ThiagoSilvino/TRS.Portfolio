@@ -330,13 +330,16 @@ function Section({ title, children }) {
 /* ---------- shared small styles ---------- */
 const iconBtn = {
   appearance: "none",
-  border: "1px solid #d1d5db",
-  background: "#fff",
-  color: "#111",
+  border: "none",          // remove border
+  background: "transparent", // remove background
+  color: "#111",           // text color if needed
   width: 40,
   height: 40,
-  borderRadius: 10,
+  borderRadius: 0,         // no rounded box anymore
+  fontSize: 18,
+  lineHeight: 1,
   display: "grid",
   placeItems: "center",
   cursor: "pointer",
+  padding: 0,              // make sure no extra space
 };
