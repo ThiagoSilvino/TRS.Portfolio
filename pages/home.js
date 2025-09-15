@@ -1,15 +1,16 @@
 // pages/home.js
 import Head from "next/head";
 import { useEffect, useRef } from "react";
-import NavBar from "../components/nav-bar.js";
-import Footer from "../components/footer.js";
+import NavBar from "../components/nav-bar";
+import Footer from "../components/footer";
 
 export default function HomePage() {
-  // Refs for parallax pieces
+  // Refs for hero layers
   const bgRef = useRef(null);
+  const nameRef = useRef(null);
   const fgRef = useRef(null);
-  const bandRef = useRef(null);
 
+  // Accessibility: respect reduced motion
   const reduceMotion =
     typeof window !== "undefined" &&
     window.matchMedia &&
@@ -19,27 +20,27 @@ export default function HomePage() {
     if (reduceMotion) return;
 
     let rafId;
-    const speedBg = 0.15;   // background image (behind)
-    const speedFg = 0.35;   // foreground image (in front)
-    const speedBand = 0.22; // parallax stripe
-    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
     const onScroll = () => {
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
         const y = window.scrollY || 0;
 
+        // Background moves the slowest
         if (bgRef.current) {
-          const t = clamp(y * speedBg, -160, 220);
-          bgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
+          bgRef.current.style.transform = `translate3d(0, ${y * 0.10}px, 0)`;
         }
+
+        // Foreground moves a touch faster
         if (fgRef.current) {
-          const t = clamp(y * speedFg - 60, -60, 360);
-          fgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
+          fgRef.current.style.transform = `translate3d(0, ${y * 0.18}px, 0)`;
         }
-        if (bandRef.current) {
-          const t = clamp(y * speedBand, -200, 400);
-          bandRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
+
+        // Mega name stays pinned until its bottom meets the bottom edge of the hero box
+        if (nameRef.current) {
+          // We keep the name fixed until the hero container would have scrolled past its bottom.
+          // Because the hero is position:sticky, once we pass the sticky boundary the whole group scrolls together.
+          // No transform needed for the name while inside the sticky range.
         }
       });
     };
@@ -63,37 +64,128 @@ export default function HomePage() {
       </Head>
 
       <main style={{ background: "#F7F7F5", color: "#111", minHeight: "100vh" }}>
-        {/* ===== Reusable Nav (brand reveals after scroll on home) ===== */}
-        <NavBar variant="home" />
+        {/* ========= NAV (kept above everything) ========= */}
+        <NavBar page="home" />
 
         {/* small spacer so the hero isn’t glued to the nav */}
         <div style={{ height: "5vh" }} />
 
-        {/* ===================== HERO NAME IMAGE ===================== */}
+        {/* ========= PINNED / LAYERED HERO =========
+            Order (back to front):
+            1) featuredbackground.png  (zIndex: 0)
+            2) meganametext.png        (zIndex: 1)
+            3) featuredforeground.png  (zIndex: 2)
+        */}
         <section
+          aria-label="Featured image with layered parallax and pinned title"
           style={{
             position: "relative",
             maxWidth: 1280,
-            margin: "0 auto",
+            margin: "0 auto 4rem",
             padding: "0 1.5rem",
           }}
         >
-          <img
-            src="/meganametext.png"
-            alt="Thiago Rocha Silvino"
-            draggable={false}
+          {/* Sticky wrapper pins the stack until its bottom meets the viewport edge */}
+          <div
             style={{
-              display: "block",
-              margin: "0 auto",
-              width: "min(1800px, 96%)",
-              height: "auto",
-              imageRendering: "auto",
-              userSelect: "none",
+              position: "sticky",
+              top: "72px", // keep clear of the sticky header height
+              zIndex: 1, // the whole hero group stays under the header (header uses a higher z-index)
+              height: "clamp(260px, 55vw, 520px)",
+              borderRadius: 12,
+              overflow: "hidden",
+              background: "#EEE",
             }}
-          />
+          >
+            {/* Background (furthest back) */}
+            <img
+              ref={bgRef}
+              src="/projects/featuredbg.png" /* optional fallback alias if you made one */
+              onError={(e) => {
+                // fallback to original path if you didn’t alias
+                if (e.currentTarget.src.endsWith("featuredbg.png")) {
+                  e.currentTarget.src = "/projects/featuredbg.png";
+                }
+              }}
+              alt=""
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                zIndex: 0,
+                willChange: "transform",
+                pointerEvents: "none",
+                filter: "grayscale(20%)",
+              }}
+            />
+
+            {/* If you’re not using an alias above, keep the original names: */}
+            <img
+              ref={bgRef}
+              src="/featuredbackground.png"
+              alt=""
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                zIndex: 0,
+                willChange: "transform",
+                pointerEvents: "none",
+                filter: "grayscale(20%)",
+              }}
+            />
+
+            {/* Mega name (middle) — pinned until the hero ends */}
+            <div
+              ref={nameRef}
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,            // << pin the lower edge
+                zIndex: 1,            // << middle layer
+                display: "grid",
+                placeItems: "center",
+                pointerEvents: "none",
+              }}
+            >
+              <img
+                src="/meganametext.png"
+                alt="Thiago Rocha Silvino"
+                draggable={false}
+                style={{
+                  display: "block",
+                  width: "min(1800px, 96%)",
+                  height: "auto",
+                  userSelect: "none",
+                }}
+              />
+            </div>
+
+            {/* Foreground (front) — pinned by bottom edge as well */}
+            <img
+              ref={fgRef}
+              src="/featuredforeground.png"
+              alt="Featured project foreground"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                zIndex: 2,            // << on top
+                willChange: "transform",
+                pointerEvents: "none",
+              }}
+            />
+          </div>
         </section>
 
-        {/* Divider / break */}
+        {/* ===== Divider (unchanged) ===== */}
         <div aria-hidden="true" style={{ maxWidth: 1280, margin: "1.25rem auto 1.75rem", padding: "0 1.5rem" }}>
           <div
             style={{
@@ -105,60 +197,7 @@ export default function HomePage() {
           />
         </div>
 
-        {/* ===================== LAYERED PARALLAX FEATURE ===================== */}
-        <section
-          id="projects"
-          style={{
-            position: "relative",
-            maxWidth: 1280,
-            margin: "0 auto 4rem",
-            padding: "0 1.5rem",
-            height: "clamp(260px, 55vw, 520px)",
-            zIndex: 1,
-            background: "#EEE",
-            borderRadius: 12,
-            overflow: "hidden",
-          }}
-          aria-label="Featured architecture image with layered parallax"
-        >
-          <img
-            ref={bgRef}
-            src="/featuredbackground.png"
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 12,
-              zIndex: 1,
-              filter: "grayscale(20%)",
-              willChange: "transform",
-            }}
-          />
-          <img
-            ref={fgRef}
-            src="/featuredforeground.png"
-            alt="Featured project foreground"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 12,
-              zIndex: 3,
-              willChange: "transform",
-              pointerEvents: "none",
-            }}
-          />
-        </section>
-
-        {/* ===================== PARALLAX STRIPE SECTION ===================== */}
+        {/* ===== Remainder of page content (unchanged) ===== */}
         <section
           style={{
             position: "relative",
@@ -168,7 +207,6 @@ export default function HomePage() {
           }}
         >
           <div
-            ref={bandRef}
             aria-hidden="true"
             style={{
               position: "absolute",
@@ -216,7 +254,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===================== OTHER PROJECTS ===================== */}
         <section
           aria-label="Other projects"
           style={{ maxWidth: 1280, margin: "0 auto 4rem", padding: "0 1.5rem" }}
@@ -245,7 +282,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===================== FOOTER (shared) ===================== */}
         <Footer />
       </main>
     </>
