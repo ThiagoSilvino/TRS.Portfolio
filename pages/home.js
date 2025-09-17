@@ -14,7 +14,7 @@ export default function HomePage() {
         />
       </Head>
 
-      <main style={{ position: "relative", color: "#111", minHeight: "100vh" }}>
+      <main style={{ position: "relative", color: "#111" }}>
         {/* Fixed full-page scroll background */}
         <img
           src="/website-background.jpg"
@@ -31,62 +31,71 @@ export default function HomePage() {
           }}
         />
 
-        {/* Navigation (not Foundry version) */}
+        {/* Navigation (original, not Foundry version) */}
         <NavBar variant="home" />
 
-        {/* Hero section with MegaNameText image */}
-        <section
+        {/* Full-height content wrapper */}
+        <div
           style={{
             position: "relative",
-            maxWidth: 1280,
-            margin: "0 auto",
-            padding: "0 1.5rem",
-            height: 800,
+            zIndex: 10,
+            minHeight: "2600px", // forces scroll height
             display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-start",
             alignItems: "center",
-            justifyContent: "center",
-            zIndex: 10,
           }}
         >
-          <img
-            src="/Projects/MegaNameText.png"
-            alt="Thiago Rocha Silvino"
-            draggable={false}
+          {/* Hero section (800px tall) */}
+          <section
             style={{
-              maxWidth: "96%",
-              height: "auto",
-              imageRendering: "auto",
-              userSelect: "none",
-            }}
-          />
-        </section>
-
-        {/* Featured foreground image */}
-        <section
-          style={{
-            position: "relative",
-            maxWidth: 1280,
-            margin: "0 auto",
-            padding: "0 1.5rem",
-            height: 600,
-            zIndex: 10,
-          }}
-          aria-label="Featured project"
-        >
-          <img
-            src="/Projects/featuredforeground.png"
-            alt="Featured foreground"
-            style={{
+              height: 800,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 12,
-              pointerEvents: "none",
             }}
-          />
-        </section>
+          >
+            <img
+              src="/Projects/MegaNameText.png"
+              alt="Thiago Rocha Silvino"
+              draggable={false}
+              style={{
+                maxWidth: "90%",
+                height: "auto",
+                userSelect: "none",
+              }}
+            />
+          </section>
 
-        {/* Footer (not Foundry version) */}
+          {/* 3 stacked project highlights (3x600px) */}
+          <section
+            style={{
+              height: 600,
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 1.5rem",
+            }}
+          >
+            <img
+              src="/Projects/featuredforeground.png"
+              alt="Featured project"
+              style={{
+                width: "100%",
+                maxWidth: 1280,
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: 12,
+              }}
+            />
+          </section>
+
+          <section style={{ height: 600 }} />
+          <section style={{ height: 600 }} />
+        </div>
+
         <Footer />
       </main>
     </>
