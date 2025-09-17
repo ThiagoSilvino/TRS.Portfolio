@@ -1,11 +1,10 @@
 // pages/gantt.js
-// Public, link-viewable Gantt page using Mermaid.js + your Foundry nav/footer components
-// Assumes you have: /components/nav-bar-foundry.js and /components/footer-foundry.js
+// Mermaid Gantt page with Foundry nav/footer.
+// Title: "Arena Project Schedule" and full-width layout with 100px gutters.
 
 import React, { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 
-// ⬇️ adjust these paths if your components live elsewhere
 import NavBarFoundry from "../components/nav-bar-foundry";
 import FooterFoundry from "../components/footer-foundry";
 
@@ -18,7 +17,6 @@ export default function GanttPage() {
 gantt
   dateFormat  YYYY-MM-DD
   title       Sample Arena Project
-  %% todayMarker is supported in Mermaid 10+
   todayMarker stroke-width:2px,stroke:#999,opacity:0.6
 
   section Discovery and Concept
@@ -37,29 +35,18 @@ gantt
   section Delivery
   Pricing/Value Eng        :d1, after c1, 7d
   Issue For Construction   :d2, after c2, 3d
-
-    section Delivery Documentations
-  Pricing/Value Eng        :d1, after c1, 7d
-  Issue For Construction   :d2, after c2, 3d
 `;
 
   useEffect(() => {
-    // Load Mermaid from CDN only on the client
     const ensureMermaid = async () => {
-      // If Mermaid already on window, reuse it
       if (typeof window !== "undefined" && window.mermaid) {
         initializeMermaid();
         return;
       }
-
-      // Inject CDN script (UMD build so it attaches to window)
       const script = document.createElement("script");
       script.src = "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js";
       script.async = true;
       script.onload = () => initializeMermaid();
-      script.onerror = () => {
-        console.error("Failed to load Mermaid from CDN.");
-      };
       document.head.appendChild(script);
     };
 
@@ -68,10 +55,21 @@ gantt
       try {
         window.mermaid.initialize({
           startOnLoad: false,
-          theme: "default", // or 'dark'
-          securityLevel: "loose", // allows basic HTML in labels if you ever need it
+          securityLevel: "loose",
+          theme: "default",
           gantt: {
             axisFormat: "%b %d",
+          },
+          // Scale up visuals
+          themeVariables: {
+            fontSize: "18px",
+            lineColor: "#888",
+            textColor: "#222",
+            // bigger bars
+            ganttBarHeight: 28,
+            ganttBarPadding: 8,
+            // thicker axes/grid for readability
+            gridColor: "#e5e7eb",
           },
         });
         renderMermaid();
@@ -84,12 +82,8 @@ gantt
     const renderMermaid = async () => {
       if (!window.mermaid || !mermaidContainerRef.current) return;
       try {
-        // Clear container (re-render safe)
         mermaidContainerRef.current.innerHTML = "";
-        const { svg } = await window.mermaid.render(
-          "foundry-gantt",
-          ganttCode.trim()
-        );
+        const { svg } = await window.mermaid.render("foundry-gantt", ganttCode.trim());
         mermaidContainerRef.current.innerHTML = svg;
       } catch (e) {
         console.error("Mermaid render error:", e);
@@ -98,16 +92,12 @@ gantt
 
     ensureMermaid();
 
-    // Re-render on window resize (optional, keeps it responsive)
     const onResize = () => {
-      if (window.mermaid) {
-        // simple re-render to fit container width
-        const el = mermaidContainerRef.current;
-        if (el) el.innerHTML = "";
-        window.mermaid.render("foundry-gantt", ganttCode.trim()).then(({ svg }) => {
-          if (mermaidContainerRef.current) mermaidContainerRef.current.innerHTML = svg;
-        });
-      }
+      if (!window.mermaid || !mermaidContainerRef.current) return;
+      mermaidContainerRef.current.innerHTML = "";
+      window.mermaid.render("foundry-gantt", ganttCode.trim()).then(({ svg }) => {
+        if (mermaidContainerRef.current) mermaidContainerRef.current.innerHTML = svg;
+      });
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
@@ -116,97 +106,82 @@ gantt
   return (
     <>
       <Head>
-        <title>Foundry | Gantt</title>
+        <title>Foundry | Arena Project Schedule</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="Foundry project Gantt chart" />
       </Head>
 
-      {/* Your site nav */}
       <NavBarFoundry />
 
       <main className="gantt-page">
         <div className="container">
-          <h1 className="page-title">Project Gantt</h1>
-          <p className="subtitle">
-            Hosted with GitHub/Vercel. Edit <code>/pages/gantt.js</code> to update tasks and dates.
-          </p>
+          <h1 className="page-title">Arena Project Schedule</h1>
 
-          {/* Gantt container */}
           <div className="gantt-wrap">
             {!isReady && <div className="loading">Loading timeline…</div>}
             <div ref={mermaidContainerRef} className="mermaid-target" />
           </div>
-
-          <details className="howto">
-            <summary>How to update tasks</summary>
-            <ol>
-              <li>Open <code>/pages/gantt.js</code>.</li>
-              <li>Edit the <code>ganttCode</code> string (Mermaid syntax).</li>
-              <li>Commit &amp; push. Your public link updates automatically.</li>
-            </ol>
-            <p>
-              Tip: Use IDs (e.g., <code>a1</code>, <code>b1</code>) and{" "}
-              <code>after</code> dependencies to chain tasks.
-            </p>
-          </details>
         </div>
       </main>
 
-      {/* Your site footer */}
       <FooterFoundry />
 
-      {/* Local styles, minimal + responsive */}
       <style jsx>{`
         .gantt-page {
           min-height: 100vh;
           display: flex;
           flex-direction: column;
         }
+        /* Full width with 100px left/right padding */
         .container {
-          max-width: 1100px;
-          margin: 0 auto;
-          padding: 24px 16px 64px;
           width: 100%;
+          padding: 24px 100px 64px;
+          margin: 0;
+          box-sizing: border-box;
           flex: 1 0 auto;
         }
         .page-title {
-          margin: 16px 0 8px;
+          margin: 16px 0 24px;
           line-height: 1.1;
-        }
-        .subtitle {
-          margin: 0 0 24px;
-          opacity: 0.75;
+          font-size: 40px;
         }
         .gantt-wrap {
           position: relative;
           width: 100%;
           overflow-x: auto;
-          border: 1px solid rgba(0,0,0,0.1);
-          border-radius: 12px;
-          padding: 12px;
-          background: rgba(0,0,0,0.02);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-radius: 16px;
+          padding: 16px;
+          background: rgba(0, 0, 0, 0.02);
         }
         .loading {
           padding: 12px;
-          font-size: 0.95rem;
+          font-size: 1rem;
           opacity: 0.7;
         }
-        .howto {
-          margin-top: 20px;
-          background: rgba(0,0,0,0.03);
-          border: 1px solid rgba(0,0,0,0.08);
-          border-radius: 10px;
-          padding: 12px 14px;
-        }
+        /* Make rendered SVG fill its container width */
         .mermaid-target :global(svg) {
           display: block;
-          height: auto;
           width: 100%;
+          height: auto;
         }
-        code {
-          background: rgba(0,0,0,0.06);
-          padding: 0 6px;
-          border-radius: 4px;
+
+        /* Optional: make page denser on very large screens */
+        @media (min-width: 1600px) {
+          .container {
+            padding-left: 100px;
+            padding-right: 100px;
+          }
+          .page-title {
+            font-size: 44px;
+          }
+        }
+
+        /* On small screens, keep gutters but allow scroll inside the gantt */
+        @media (max-width: 640px) {
+          .container {
+            padding-left: 24px;
+            padding-right: 24px;
+          }
         }
       `}</style>
     </>
