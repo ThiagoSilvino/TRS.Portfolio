@@ -17,11 +17,11 @@ export default function GanttPage() {
   const ganttCode = `
 gantt
   dateFormat  YYYY-MM-DD
-  title       Foundry — Project Timeline
+  title       Sample Arena Project
   %% todayMarker is supported in Mermaid 10+
   todayMarker stroke-width:2px,stroke:#999,opacity:0.6
 
-  section Discovery
+  section Discovery and Concept
   Brief & Goals            :a1, 2025-09-18, 5d
   Stakeholder Interviews   :a2, after a1, 4d
 
@@ -35,6 +35,10 @@ gantt
   CD Set                   :c2, after c1, 21d
 
   section Delivery
+  Pricing/Value Eng        :d1, after c1, 7d
+  Issue For Construction   :d2, after c2, 3d
+
+    section Delivery Documentations
   Pricing/Value Eng        :d1, after c1, 7d
   Issue For Construction   :d2, after c2, 3d
 `;
