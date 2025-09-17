@@ -1,6 +1,5 @@
 // pages/gantt.js
-// Mermaid Gantt page with Foundry nav/footer.
-// Title: "Arena Project Schedule" and full-width layout with 100px gutters.
+// Arena Project Schedule — simplified 3-section Mermaid Gantt (Dec 2026 → Jan 2027)
 
 import React, { useEffect, useRef, useState } from "react";
 import Head from "next/head";
@@ -12,29 +11,26 @@ export default function GanttPage() {
   const mermaidContainerRef = useRef(null);
   const [isReady, setIsReady] = useState(false);
 
-  // ✏️ Edit your Gantt here (Mermaid syntax)
+  // Minimal Gantt for troubleshooting alignment
   const ganttCode = `
 gantt
   dateFormat  YYYY-MM-DD
-  title       Sample Arena Project
-  todayMarker stroke-width:2px,stroke:#999,opacity:0.6
+  title       Arena Project Schedule
+  axisFormat  %b %d, %Y
 
-  section Discovery and Concept
-  Brief & Goals            :a1, 2025-09-18, 5d
-  Stakeholder Interviews   :a2, after a1, 4d
+  %% Keep the range explicit across Dec 2026 → Jan 2027
+  %% (anchor tasks define the visible window)
+  section Concept Phase
+  Kickoff & Brief         :c1, 2026-12-01, 5d
+  Concept Options         :c2, 2026-12-06, 10d
 
-  section Design
-  Concept Options          :b1, after a2, 10d
-  Preferred Direction      :b2, after b1, 5d
-  Schematic Package        :b3, after b2, 14d
+  section Design Delivery
+  Schematic Package       :d1, 2027-01-03, 10d
+  DD Set                  :d2, 2027-01-13, 12d
 
   section Documentation
-  DD Set                   :c1, after b3, 14d
-  CD Set                   :c2, after c1, 21d
-
-  section Delivery
-  Pricing/Value Eng        :d1, after c1, 7d
-  Issue For Construction   :d2, after c2, 3d
+  Notes & Redlines        :e1, 2026-12-20, 4d
+  Issue For Construction  :e2, 2027-01-25, 7d
 `;
 
   useEffect(() => {
@@ -47,6 +43,7 @@ gantt
       script.src = "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js";
       script.async = true;
       script.onload = () => initializeMermaid();
+      script.onerror = () => console.error("Failed to load Mermaid.");
       document.head.appendChild(script);
     };
 
@@ -57,19 +54,13 @@ gantt
           startOnLoad: false,
           securityLevel: "loose",
           theme: "default",
-          gantt: {
-            axisFormat: "%b %d",
-          },
-          // Scale up visuals
+          gantt: { axisFormat: "%b %d" },
+          // Lock font to Mermaid defaults to avoid text/grid misalignment
           themeVariables: {
-            fontSize: "18px",
-            lineColor: "#888",
-            textColor: "#222",
-            // bigger bars
-            ganttBarHeight: 28,
-            ganttBarPadding: 8,
-            // thicker axes/grid for readability
-            gridColor: "#e5e7eb",
+            fontFamily: "trebuchet ms, verdana, arial",
+            fontSize: "16px",
+            ganttBarHeight: 26,
+            ganttBarPadding: 6,
           },
         });
         renderMermaid();
@@ -92,6 +83,7 @@ gantt
 
     ensureMermaid();
 
+    // Re-render on resize to keep widths crisp
     const onResize = () => {
       if (!window.mermaid || !mermaidContainerRef.current) return;
       mermaidContainerRef.current.innerHTML = "";
@@ -115,7 +107,6 @@ gantt
       <main className="gantt-page">
         <div className="container">
           <h1 className="page-title">Arena Project Schedule</h1>
-
           <div className="gantt-wrap">
             {!isReady && <div className="loading">Loading timeline…</div>}
             <div ref={mermaidContainerRef} className="mermaid-target" />
@@ -131,7 +122,7 @@ gantt
           display: flex;
           flex-direction: column;
         }
-        /* Full width with 100px left/right padding */
+        /* Full page with 100px gutters */
         .container {
           width: 100%;
           padding: 24px 100px 64px;
@@ -158,30 +149,14 @@ gantt
           font-size: 1rem;
           opacity: 0.7;
         }
-        /* Make rendered SVG fill its container width */
+        /* Keep the SVG crisp and full-width without CSS transforms */
         .mermaid-target :global(svg) {
           display: block;
-          width: 100%;
+          max-width: 100%;
           height: auto;
         }
-
-        /* Optional: make page denser on very large screens */
-        @media (min-width: 1600px) {
-          .container {
-            padding-left: 100px;
-            padding-right: 100px;
-          }
-          .page-title {
-            font-size: 44px;
-          }
-        }
-
-        /* On small screens, keep gutters but allow scroll inside the gantt */
         @media (max-width: 640px) {
-          .container {
-            padding-left: 24px;
-            padding-right: 24px;
-          }
+          .container { padding-left: 24px; padding-right: 24px; }
         }
       `}</style>
     </>
