@@ -2,7 +2,7 @@
 import Head from "next/head";
 import "../styles/globals.css";
 
-export default function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
@@ -27,9 +27,7 @@ export default function MyApp({ Component, pageProps }) {
           content="Elegant, simple, and creative architecture & design work."
         />
         <meta property="og:type" content="website" />
-        {/* Update to your primary domain if different */}
         <meta property="og:url" content="https://thiagosilvino.com" />
-        {/* Optional preview image if/when you add one to /public */}
         {/* <meta property="og:image" content="/og-image.jpg" /> */}
       </Head>
 
@@ -38,3 +36,5 @@ export default function MyApp({ Component, pageProps }) {
     </>
   );
 }
+
+export default MyApp;
