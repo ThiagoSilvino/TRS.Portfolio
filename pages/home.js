@@ -5,7 +5,6 @@ import NavBar from "../components/nav-bar.js";
 import Footer from "../components/footer.js";
 
 export default function HomePage() {
-  // Refs for parallax pieces
   const bgRef = useRef(null);
   const fgRef = useRef(null);
   const bandRef = useRef(null);
@@ -19,9 +18,9 @@ export default function HomePage() {
     if (reduceMotion) return;
 
     let rafId;
-    const speedBg = 0.15;   // background image (behind)
-    const speedFg = 0.35;   // foreground image (in front)
-    const speedBand = 0.22; // parallax stripe
+    const speedBg = 0.15;
+    const speedFg = 0.35;
+    const speedBand = 0.22;
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
     const onScroll = () => {
@@ -31,15 +30,15 @@ export default function HomePage() {
 
         if (bgRef.current) {
           const t = clamp(y * speedBg, -160, 220);
-          bgRef.current.style.transform = translate3d(0, ${t}px, 0);
+          bgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
         }
         if (fgRef.current) {
           const t = clamp(y * speedFg - 60, -60, 360);
-          fgRef.current.style.transform = translate3d(0, ${t}px, 0);
+          fgRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
         }
         if (bandRef.current) {
           const t = clamp(y * speedBand, -200, 400);
-          bandRef.current.style.transform = translate3d(0, ${t}px, 0);
+          bandRef.current.style.transform = `translate3d(0, ${t}px, 0)`;
         }
       });
     };
@@ -63,13 +62,27 @@ export default function HomePage() {
       </Head>
 
       <main style={{ background: "#F7F7F5", color: "#111", minHeight: "100vh" }}>
-        {/* ===== Reusable Nav (brand reveals after scroll on home) ===== */}
-        <NavBar variant="home" />
+        {/* Fixed full-page scroll background */}
+        <img
+          src="/website-background.jpg"
+          alt="Page Background"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        />
 
-        {/* small spacer so the hero isn’t glued to the nav */}
+        {/* Nav */}
+        <NavBar variant="home" />
         <div style={{ height: "5vh" }} />
 
-        {/* ===================== HERO NAME IMAGE ===================== */}
+        {/* Hero section */}
         <section
           style={{
             position: "relative",
@@ -79,7 +92,7 @@ export default function HomePage() {
           }}
         >
           <img
-            src="/meganametext.png"
+            src="/Projects/MegaNameText.png"
             alt="Thiago Rocha Silvino"
             draggable={false}
             style={{
@@ -93,8 +106,15 @@ export default function HomePage() {
           />
         </section>
 
-        {/* Divider / break */}
-        <div aria-hidden="true" style={{ maxWidth: 1280, margin: "1.25rem auto 1.75rem", padding: "0 1.5rem" }}>
+        {/* Divider */}
+        <div
+          aria-hidden="true"
+          style={{
+            maxWidth: 1280,
+            margin: "1.25rem auto 1.75rem",
+            padding: "0 1.5rem",
+          }}
+        >
           <div
             style={{
               height: 8,
@@ -105,7 +125,7 @@ export default function HomePage() {
           />
         </div>
 
-        {/* ===================== LAYERED PARALLAX FEATURE ===================== */}
+        {/* Featured parallax image section */}
         <section
           id="projects"
           style={{
@@ -123,7 +143,7 @@ export default function HomePage() {
         >
           <img
             ref={bgRef}
-            src="/featuredbackground.png"
+            src="/Projects/featuredbackground.png"
             alt=""
             style={{
               position: "absolute",
@@ -139,7 +159,7 @@ export default function HomePage() {
           />
           <img
             ref={fgRef}
-            src="/featuredforeground.png"
+            src="/Projects/featuredforeground.png"
             alt="Featured project foreground"
             onError={(e) => {
               e.currentTarget.style.display = "none";
@@ -158,7 +178,7 @@ export default function HomePage() {
           />
         </section>
 
-        {/* ===================== PARALLAX STRIPE SECTION ===================== */}
+        {/* Parallax stripe */}
         <section
           style={{
             position: "relative",
@@ -197,7 +217,13 @@ export default function HomePage() {
               gap: "1rem",
             }}
           >
-            <small style={{ letterSpacing: ".12em", textTransform: "uppercase", color: "#6B7280" }}>
+            <small
+              style={{
+                letterSpacing: ".12em",
+                textTransform: "uppercase",
+                color: "#6B7280",
+              }}
+            >
               Welcome
             </small>
             <h2
@@ -210,20 +236,42 @@ export default function HomePage() {
             >
               Hello
             </h2>
-            <p style={{ margin: 0, color: "#374151", maxWidth: 820, marginInline: "auto" }}>
+            <p
+              style={{
+                margin: 0,
+                color: "#374151",
+                maxWidth: 820,
+                marginInline: "auto",
+              }}
+            >
               Context, Calm and Clarity
             </p>
           </div>
         </section>
 
-        {/* ===================== OTHER PROJECTS ===================== */}
+        {/* Project Cards */}
         <section
           aria-label="Other projects"
-          style={{ maxWidth: 1280, margin: "0 auto 4rem", padding: "0 1.5rem" }}
+          style={{
+            maxWidth: 1280,
+            margin: "0 auto 4rem",
+            padding: "0 1.5rem",
+          }}
         >
-          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr",
+              gap: "1rem",
+            }}
+          >
             <article style={card}>
-              <img src="/poster.jpg" alt="Project thumbnail" style={thumb} loading="lazy" />
+              <img
+                src="/poster.jpg"
+                alt="Project thumbnail"
+                style={thumb}
+                loading="lazy"
+              />
               <div style={cardMeta}>
                 <h3 style={{ margin: 0 }}>Courtyard House</h3>
                 <small style={{ color: "#6B7280" }}>Residential · 2023</small>
@@ -245,7 +293,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===================== FOOTER (shared) ===================== */}
+        {/* Footer */}
         <Footer />
       </main>
     </>
