@@ -1,7 +1,7 @@
-// app/page.tsx  (or pages/index.tsx)
 export default function HomePage() {
   return (
     <main>
+      {/* Hero Section */}
       <section className="px-4 py-16 md:py-20">
         <div className="mx-auto max-w-screen-xl">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
@@ -18,6 +18,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Project Samples */}
       <section className="px-4 py-16 md:py-20">
         <div className="mx-auto max-w-screen-xl">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -52,6 +53,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Call to Action */}
       <section className="px-4 py-16 md:py-20">
         <div className="mx-auto max-w-screen-xl text-center">
           <a
