@@ -1,70 +1,48 @@
-export default function HomePage() {
+// pages/_app.js
+import Head from "next/head";
+import "../styles/globals.css";
+
+function MyApp({ Component, pageProps }) {
   return (
-    <main>
-      {/* Hero Section */}
-      <section className="px-4 py-16 md:py-20">
-        <div className="mx-auto max-w-screen-xl">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
-            THIAGO ROCHA SILVINO
-          </h1>
-          <div className="mt-8">
-            <img
-              src="/projects/featured/featuredbackground.png"
-              alt="Featured hero"
-              className="w-full h-auto rounded-md"
-              loading="eager"
-            />
-          </div>
-        </div>
-      </section>
+    <>
+      <Head>
+        {/* Core meta */}
+        <title>Thiago Rocha Silvino — Portfolio</title>
+        <meta
+          name="description"
+          content="Portfolio of Thiago Rocha Silvino — elegant, simple, and creative architecture & design work."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-      {/* Project Samples */}
-      <section className="px-4 py-16 md:py-20">
-        <div className="mx-auto max-w-screen-xl">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <a href="#" className="block">
-              <img
-                src="/projects/featured/lsu-hero.jpg"
-                alt="LSU — sample project"
-                className="w-full h-auto rounded-md"
-                loading="lazy"
-              />
-              <p className="mt-2 text-sm text-gray-600">LSU</p>
-            </a>
-            <a href="#" className="block">
-              <img
-                src="/projects/featured/gilroyhero.jpeg"
-                alt="Gilroy — sample project"
-                className="w-full h-auto rounded-md"
-                loading="lazy"
-              />
-              <p className="mt-2 text-sm text-gray-600">Gilroy</p>
-            </a>
-            <a href="#" className="block">
-              <img
-                src="/projects/featured/usag-hero.jpg"
-                alt="USAG — sample project"
-                className="w-full h-auto rounded-md"
-                loading="lazy"
-              />
-              <p className="mt-2 text-sm text-gray-600">USAG</p>
-            </a>
-          </div>
-        </div>
-      </section>
+        {/* Favicon (all lowercase in /public) */}
+        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
 
-      {/* Call to Action */}
-      <section className="px-4 py-16 md:py-20">
-        <div className="mx-auto max-w-screen-xl text-center">
-          <a
-            href="#"
-            className="inline-block rounded-md border border-black px-6 py-3 text-base font-medium"
-            aria-label="View full work (CTA)"
-          >
-            VIEW FULL WORK
-          </a>
-        </div>
-      </section>
-    </main>
+        {/* Open Graph (for link previews) */}
+        <meta property="og:title" content="Thiago Rocha Silvino — Portfolio" />
+        <meta
+          property="og:description"
+          content="Elegant, simple, and creative architecture & design work."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://thiagosilvino.com" />
+        {/* Optional image for social preview */}
+        {/* <meta property="og:image" content="/og-image.jpg" /> */}
+
+        {/* Optional: Preload hero image for faster first paint */}
+        <link
+          rel="preload"
+          as="image"
+          href="/projects/featured/featuredbackground.png"
+        />
+      </Head>
+
+      {/* Render page content */}
+      <Component {...pageProps} />
+    </>
   );
 }
+
+export default MyApp;
